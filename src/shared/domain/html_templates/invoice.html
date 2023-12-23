@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <style>
+    table tr td {
+      border: solid 1px black;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="text-align: center;">
+    <h1>Factura de venta</h1>
+    <h2>Nro. {{_id}}</h2>
+    <h4>{{#headquarter}} Tienda: {{#shop}} {{name}} {{/shop}} sede {{name}} {{/headquarter}}</h4>
+  </div>
+  <table style="width: 100%">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>SKU</th>
+        <th>Precio unitario</th>
+        <th>Cantidad</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#products}}
+      <tr>
+        <td>{{name}}</td>
+        <td></td>
+        <td>{{price}}</td>
+        <td>{{quantity}}</td>
+        <td>{{price * quantity}}</td>
+      </tr>
+      {{/products}}
+    </tbody>
+  </table>
+  <h3>Total:</h3>
+  <h4>{{total}}</h4>
+</body>
+
+</html>
