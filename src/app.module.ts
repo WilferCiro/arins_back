@@ -8,21 +8,23 @@ import { AssetsModule } from "./asset/infrastructure/asset.module";
 import { CompaniesModule } from "./company/infrastructure/company.module";
 import { DependenciesModule } from "./dependency/infrastructure/dependency.module";
 import { UsersModule } from "./user/infrastructure/user.module";
+import { ProductsModule } from "./product/infrastructure/product.module";
 
 @Module({
-	imports: [
-		RequestContextModule,
-		HttpModule.register({
-			timeout: 5000,
-			maxRedirects: 5,
-		}),
-		CoreModule,
-		EmailProvider,
-		MongodbProvider,
-		AssetsModule,
-		CompaniesModule,
-		DependenciesModule,
-		UsersModule,
-	],
+  imports: [
+    RequestContextModule,
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
+    CoreModule,
+    EmailProvider,
+    MongodbProvider,
+    AssetsModule,
+    CompaniesModule,
+    DependenciesModule,
+    ProductsModule,
+    UsersModule,
+  ],
 })
 export class AppModule {}

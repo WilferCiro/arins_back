@@ -26,6 +26,7 @@ import { AuthGuard } from "src/shared/application/middleware/auth.middleware";
 import { PaginationMapper } from "src/shared/application/mapper/pagination.mapper";
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { SelectDto } from "src/shared/application/dto/select.dto";
 
 @Controller("companies")
 export class CompanyController extends BaseController {
@@ -57,6 +58,14 @@ export class CompanyController extends BaseController {
       total: data.total,
       data: data.data.map((d: Company) => this.mapper.toDto(d)),
     };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("select")
+  async findSelect(@Query() query): Promise<SelectDto[]> {
+    const search = query.search || "";
+    const data = await this.service.findSelect(search);
+    return data.map((d: Company) => this.mapper.toDtoSelect(d));
   }
 
   @UseGuards(AuthGuard)

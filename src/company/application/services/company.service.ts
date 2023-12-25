@@ -35,6 +35,10 @@ export class CompanyServiceImpl implements CompanyService {
     return await this.repository.findPaginated(pagination);
   }
 
+  async findSelect(query: string): Promise<Company[]> {
+    return await this.repository.findSelect(query);
+  }
+
   async create(company: DomainCreateCompanyDto): Promise<Company> {
     return await this.repository.create(company);
   }

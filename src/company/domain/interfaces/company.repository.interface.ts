@@ -16,6 +16,7 @@ export interface CompanyRepository {
     pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<Company>>;
 
+  findSelect(query: string): Promise<Company[]>;
   create(company: DomainCreateCompanyDto): Promise<Company>;
   update(_id: string, company: DomainUpdateCompanyDto): Promise<Company>;
 }

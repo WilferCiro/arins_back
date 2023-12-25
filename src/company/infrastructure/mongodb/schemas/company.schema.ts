@@ -35,3 +35,9 @@ export class CompanyDocument extends Document {
 }
 
 export const CompanySchema = SchemaFactory.createForClass(CompanyDocument);
+
+CompanySchema.index({ name: 1 });
+CompanySchema.index({ nit: 1 });
+CompanySchema.index({ email: 1 });
+CompanySchema.index({ webpage: 1 });
+CompanySchema.index({ type: 1 });

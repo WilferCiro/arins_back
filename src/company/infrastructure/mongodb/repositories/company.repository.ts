@@ -45,6 +45,14 @@ export class CompanyRepositoryImpl implements CompanyRepository {
     return { total, data };
   }
 
+  async findSelect(query: string): Promise<Company[]> {
+    const filters = {
+      name: { $regex: query, $options: "i" },
+    };
+    const data = await this.model.find(filters).lean();
+    return data;
+  }
+
   async create(company: DomainCreateCompanyDto): Promise<Company> {
     const created = new this.model(company);
     return await created.save();

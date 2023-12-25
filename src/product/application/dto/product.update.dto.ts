@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 
-export class UpdateUserDto {
+export class UpdateProductDto {
   @IsOptional()
   @IsNotEmpty()
   name?: string;

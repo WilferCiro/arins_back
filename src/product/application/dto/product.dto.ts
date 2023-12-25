@@ -1,4 +1,4 @@
-export interface DependencyDto {
+export interface ProductDto {
   id?: number;
   name: string;
   active: boolean;
