@@ -31,7 +31,10 @@ export class DependencyMapper {
   }
 
   toDto(dependency: Dependency): DependencyDto {
-    return dependency as DependencyDto;
+    return {
+      ...dependency,
+      company_id: dependency.company._id,
+    } as DependencyDto;
   }
 
   toDtoSelect(dependency: Dependency): SelectDto {

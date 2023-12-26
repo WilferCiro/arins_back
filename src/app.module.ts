@@ -9,6 +9,7 @@ import { CompaniesModule } from "./company/infrastructure/company.module";
 import { DependenciesModule } from "./dependency/infrastructure/dependency.module";
 import { UsersModule } from "./user/infrastructure/user.module";
 import { ProductsModule } from "./product/infrastructure/product.module";
+import { StoresModule } from "./store/infrastructure/store.module";
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ProductsModule } from "./product/infrastructure/product.module";
     CompaniesModule,
     DependenciesModule,
     ProductsModule,
+    StoresModule,
     UsersModule,
   ],
 })

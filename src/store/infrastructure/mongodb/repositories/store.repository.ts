@@ -8,34 +8,32 @@ import { Model, Types } from "mongoose";
 // Application
 
 // Domain
-import { Dependency } from "../../../domain/entities/dependency.type";
-import { DependencyRepository } from "../../../domain/interfaces/dependency.repository.interface";
-import { DomainCreateDependencyDto } from "src/dependency/domain/dto/dependency.create.dto";
-import { DomainUpdateDependencyDto } from "src/dependency/domain/dto/dependency.update.dto";
+import { Store } from "../../../domain/entities/store.type";
+import { StoreRepository } from "../../../domain/interfaces/store.repository.interface";
+import { DomainCreateStoreDto } from "src/store/domain/dto/store.create.dto";
+import { DomainUpdateStoreDto } from "src/store/domain/dto/store.update.dto";
 
 // Shared
 import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 
 @Injectable()
-export class DependencyRepositoryImpl implements DependencyRepository {
-  constructor(
-    @InjectModel("Dependency") private readonly model: Model<Dependency>
-  ) {}
+export class StoreRepositoryImpl implements StoreRepository {
+  constructor(@InjectModel("Store") private readonly model: Model<Store>) {}
 
-  async findAll(): Promise<Dependency[]> {
-    const dependencies = await this.model.find().lean();
-    return dependencies;
+  async findAll(): Promise<Store[]> {
+    const stores = await this.model.find().lean();
+    return stores;
   }
 
-  async findById(_id: string): Promise<Dependency> {
+  async findById(_id: string): Promise<Store> {
     const register = await this.model.findById(_id).lean();
     return register;
   }
 
   async findPaginated(
     pagination: DomainPaginationDto
-  ): Promise<PaginatedResultInterface<Dependency>> {
+  ): Promise<PaginatedResultInterface<Store>> {
     const filters = {
       $or: [
         { name: { $regex: pagination.search, $options: "i" } },
@@ -56,7 +54,7 @@ export class DependencyRepositoryImpl implements DependencyRepository {
     return { total, data };
   }
 
-  async findSelect(query: string): Promise<Dependency[]> {
+  async findSelect(query: string): Promise<Store[]> {
     const filters = {
       name: { $regex: query, $options: "i" },
     };
@@ -64,22 +62,17 @@ export class DependencyRepositoryImpl implements DependencyRepository {
     return data;
   }
 
-  async create(dependency: DomainCreateDependencyDto): Promise<Dependency> {
+  async create(store: DomainCreateStoreDto): Promise<Store> {
     const newData = {
-      ...dependency,
-      company: new Types.ObjectId(dependency.company_id),
+      ...store,
+      company: new Types.ObjectId(store.company_id),
       company_id: undefined,
     };
     const created = new this.model(newData);
     return await created.save();
   }
 
-  async update(
-    _id: string,
-    dependency: DomainUpdateDependencyDto
-  ): Promise<Dependency> {
-    return await this.model
-      .findByIdAndUpdate(_id, dependency, { new: true })
-      .exec();
+  async update(_id: string, store: DomainUpdateStoreDto): Promise<Store> {
+    return await this.model.findByIdAndUpdate(_id, store, { new: true }).exec();
   }
 }

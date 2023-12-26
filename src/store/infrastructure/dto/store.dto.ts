@@ -1,6 +1,6 @@
 import { CompanyDto } from "src/company/infrastructure/dto/company.dto";
 
-export interface DependencyDto {
+export interface StoreDto {
   id?: number;
   name: string;
   description: string;
