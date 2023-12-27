@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { CompanyDocument } from "src/company/infrastructure/mongodb/schemas/company.schema";
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, versionKey: false })
 export class StoreDocument extends Document {
   @Prop({ required: true })
   name: string;

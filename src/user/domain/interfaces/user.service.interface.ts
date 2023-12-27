@@ -11,10 +11,12 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 
 export interface UserService {
   findById(_id: string): Promise<User>;
+  getByEmail(email: string): Promise<User>;
   findAll(): Promise<User[]>;
   findPaginated(
     pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<User>>;
   create(user: DomainCreateUserDto): Promise<User>;
+  restorePassword(_id: string): Promise<boolean>;
   update(_id: string, user: DomainUpdateUserDto): Promise<User>;
 }

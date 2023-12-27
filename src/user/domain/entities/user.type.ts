@@ -5,6 +5,7 @@ export class User {
   email: string;
   cellphone: string;
   active: boolean;
+  shangePassword: boolean;
   password: string;
   createdAt?: Date;
   updatedAt?: Date;

@@ -16,10 +16,14 @@ import { DomainUpdateUserDto } from "src/user/domain/dto/user.update.dto";
 // Shared
 import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { UserMapper } from "../../mapper/user.mapper";
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
-  constructor(@InjectModel("User") private readonly model: Model<User>) {}
+  private mapper: UserMapper;
+  constructor(@InjectModel("User") private readonly model: Model<User>) {
+    this.mapper = new UserMapper();
+  }
 
   async findAll(): Promise<User[]> {
     const users = await this.model.find().lean();
@@ -29,6 +33,14 @@ export class UserRepositoryImpl implements UserRepository {
   async findById(_id: string): Promise<User> {
     const register = await this.model.findById(_id).lean();
     return register;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const register = await this.model.find({ email }).lean();
+    if (!register) {
+      return null;
+    }
+    return register[0];
   }
 
   async findPaginated(
@@ -47,7 +59,8 @@ export class UserRepositoryImpl implements UserRepository {
     const data = await this.model
       .find(filters)
       .skip(pagination.page * pagination.count)
-      .limit(pagination.count);
+      .limit(pagination.count)
+      .lean();
     return { total, data };
   }
 

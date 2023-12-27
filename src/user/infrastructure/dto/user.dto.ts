@@ -4,6 +4,7 @@ export interface UserDto {
   lastName: string;
   email: string;
   cellphone: string;
+  shangePassword: boolean;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;

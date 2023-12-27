@@ -10,6 +10,7 @@ import { DependenciesModule } from "./dependency/infrastructure/dependency.modul
 import { UsersModule } from "./user/infrastructure/user.module";
 import { ProductsModule } from "./product/infrastructure/product.module";
 import { StoresModule } from "./store/infrastructure/store.module";
+import { AuthModule } from "./auth/infrastructure/auth.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { StoresModule } from "./store/infrastructure/store.module";
       maxRedirects: 5,
     }),
     CoreModule,
+    AuthModule,
     EmailProvider,
     MongodbProvider,
     AssetsModule,

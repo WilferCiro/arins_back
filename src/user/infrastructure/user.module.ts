@@ -5,6 +5,7 @@ import { UserServiceImpl } from "../application/services/user.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { UserSchema } from "./mongodb/schemas/user.schema";
 import { UserRepositoryImpl } from "./mongodb/repositories/user.repository";
+import { PasswordHelper } from "src/shared/infrastructure/helpers/PasswordHelper";
 
 const providers: Provider[] = [
   {
@@ -20,6 +21,7 @@ const providers: Provider[] = [
 @Module({
   imports: [MongooseModule.forFeature([{ name: "User", schema: UserSchema }])],
   controllers: [UserController],
-  providers: providers,
+  providers: [PasswordHelper, ...providers],
+  exports: [...providers],
 })
 export class UsersModule {}

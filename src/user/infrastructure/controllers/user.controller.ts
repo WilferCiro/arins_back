@@ -38,13 +38,6 @@ export class UserController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
-  @Get("")
-  async findAll(): Promise<UserDto[]> {
-    const data = await this.service.findAll();
-    return data.map((d: User) => this.mapper.toDto(d));
-  }
-
-  @UseGuards(AuthGuard)
   @Get("paginated")
   async findPaginated(
     @Query() paginationDto: PaginatedDto
@@ -67,6 +60,27 @@ export class UserController extends BaseController {
   @Post()
   async create(@Body() user: CreateUserDto): Promise<UserDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(user));
+    return this.mapper.toDto(data);
+  }
+
+  @Post(":_id/restore_password")
+  async restorePassword(@Param("_id") _id: string) {
+    const data = await this.service.restorePassword(_id);
+    return {
+      success: data,
+    };
+  }
+
+  @UseGuards(AuthGuard)
+  @Patch(":_id/password")
+  async updatePassword(
+    @Param("_id") _id: string,
+    @Body() user: UpdateUserDto
+  ): Promise<UserDto> {
+    const data = await this.service.update(
+      _id,
+      this.mapper.toDomainUpdate(user)
+    );
     return this.mapper.toDto(data);
   }
 

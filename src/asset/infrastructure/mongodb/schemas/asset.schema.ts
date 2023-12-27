@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { DependencyDocument } from "src/dependency/infrastructure/mongodb/schemas/dependency.schema";
 
-@Schema({ timestamps: true })
+@Schema({ timestamps: true, versionKey: false })
 export class AssetDocument extends Document {
   @Prop({ required: true })
   name: string;

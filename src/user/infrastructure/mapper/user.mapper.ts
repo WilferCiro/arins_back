@@ -10,6 +10,8 @@ import { CreateUserDto } from "../dto/user.create.dto";
 import { UpdateUserDto } from "../dto/user.update.dto";
 import { DomainCreateUserDto } from "src/user/domain/dto/user.create.dto";
 import { DomainUpdateUserDto } from "src/user/domain/dto/user.update.dto";
+import { UserDocument } from "../mongodb/schemas/user.schema";
+import { FlattenMaps } from "mongoose";
 
 // Shared
 
