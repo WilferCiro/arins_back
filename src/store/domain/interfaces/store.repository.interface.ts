@@ -13,10 +13,11 @@ export interface StoreRepository {
   findById(_id: string): Promise<Store>;
   findAll(): Promise<Store[]>;
   findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto,
+    company_id: string
   ): Promise<PaginatedResultInterface<Store>>;
-  findSelect(query: string): Promise<Store[]>;
+  findSelect(query: string, company_id: string): Promise<Store[]>;
 
-  create(store: DomainCreateStoreDto): Promise<Store>;
+  create(store: DomainCreateStoreDto, company_id: string): Promise<Store>;
   update(_id: string, store: DomainUpdateStoreDto): Promise<Store>;
 }

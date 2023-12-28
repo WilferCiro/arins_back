@@ -13,12 +13,15 @@ import { DomainUpdateDependencyDto } from "src/dependency/domain/dto/dependency.
 
 // Shared
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
 
 @Injectable()
 export class DependencyServiceImpl implements DependencyService {
   constructor(
     @Inject("DependencyRepository")
-    private readonly repository: DependencyRepository
+    private readonly repository: DependencyRepository,
+    @Inject("RequestContext")
+    private readonly contextService: RequestContextService
   ) {}
 
   async findAll(): Promise<Dependency[]> {
@@ -32,15 +35,18 @@ export class DependencyServiceImpl implements DependencyService {
   async findPaginated(
     pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<Dependency>> {
-    return await this.repository.findPaginated(pagination);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findPaginated(pagination, company_id);
   }
 
   async findSelect(query: string): Promise<Dependency[]> {
-    return await this.repository.findSelect(query);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findSelect(query, company_id);
   }
 
   async create(dependency: DomainCreateDependencyDto): Promise<Dependency> {
-    return await this.repository.create(dependency);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.create(dependency, company_id);
   }
 
   async update(

@@ -34,9 +34,11 @@ export class DependencyRepositoryImpl implements DependencyRepository {
   }
 
   async findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto,
+    company_id: string
   ): Promise<PaginatedResultInterface<Dependency>> {
     const filters = {
+      company: new Types.ObjectId(company_id),
       $or: [
         { name: { $regex: pagination.search, $options: "i" } },
         { code: { $regex: pagination.search, $options: "i" } },
@@ -56,18 +58,22 @@ export class DependencyRepositoryImpl implements DependencyRepository {
     return { total, data };
   }
 
-  async findSelect(query: string): Promise<Dependency[]> {
+  async findSelect(query: string, company_id: string): Promise<Dependency[]> {
     const filters = {
+      company: new Types.ObjectId(company_id),
       name: { $regex: query, $options: "i" },
     };
     const data = await this.model.find(filters).lean();
     return data;
   }
 
-  async create(dependency: DomainCreateDependencyDto): Promise<Dependency> {
+  async create(
+    dependency: DomainCreateDependencyDto,
+    company_id: string
+  ): Promise<Dependency> {
     const newData = {
       ...dependency,
-      company: new Types.ObjectId(dependency.company_id),
+      company: new Types.ObjectId(company_id),
       company_id: undefined,
     };
     const created = new this.model(newData);

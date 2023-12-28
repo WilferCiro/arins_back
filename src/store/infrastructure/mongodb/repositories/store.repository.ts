@@ -32,9 +32,11 @@ export class StoreRepositoryImpl implements StoreRepository {
   }
 
   async findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto,
+    company_id: string
   ): Promise<PaginatedResultInterface<Store>> {
     const filters = {
+      company: new Types.ObjectId(company_id),
       $or: [
         { name: { $regex: pagination.search, $options: "i" } },
         { code: { $regex: pagination.search, $options: "i" } },
@@ -54,18 +56,22 @@ export class StoreRepositoryImpl implements StoreRepository {
     return { total, data };
   }
 
-  async findSelect(query: string): Promise<Store[]> {
+  async findSelect(query: string, company_id: string): Promise<Store[]> {
     const filters = {
+      company: new Types.ObjectId(company_id),
       name: { $regex: query, $options: "i" },
     };
     const data = await this.model.find(filters).lean();
     return data;
   }
 
-  async create(store: DomainCreateStoreDto): Promise<Store> {
+  async create(
+    store: DomainCreateStoreDto,
+    company_id: string
+  ): Promise<Store> {
     const newData = {
       ...store,
-      company: new Types.ObjectId(store.company_id),
+      company: new Types.ObjectId(company_id),
       company_id: undefined,
     };
     const created = new this.model(newData);

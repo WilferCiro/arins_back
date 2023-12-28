@@ -6,10 +6,6 @@ const moduleProviders: Provider[] = [
     provide: "RequestContext",
     useClass: RequestContextServiceImpl,
   },
-  {
-    provide: "RequestContext",
-    useClass: RequestContextServiceImpl,
-  },
 ];
 
 @Global()

@@ -13,9 +13,5 @@ export class CreateDependencyDto {
   code: string;
 
   @IsNotEmpty()
-  @Type(() => Types.ObjectId)
-  company_id: string;
-
-  @IsNotEmpty()
   active: boolean;
 }

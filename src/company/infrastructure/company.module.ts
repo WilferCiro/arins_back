@@ -1,18 +1,18 @@
 // Se ubica en infraestructura porque tiene intereacción con la base de datos
-import { Module, Provider } from '@nestjs/common';
-import { CompanyController } from './controllers/company.controller';
-import { CompanyServiceImpl } from '../application/services/company.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { CompanySchema } from './mongodb/schemas/company.schema';
-import { CompanyRepositoryImpl } from './mongodb/repositories/company.repository';
+import { Module, Provider } from "@nestjs/common";
+import { CompanyController } from "./controllers/company.controller";
+import { CompanyServiceImpl } from "../application/services/company.service";
+import { MongooseModule } from "@nestjs/mongoose";
+import { CompanySchema } from "./mongodb/schemas/company.schema";
+import { CompanyRepositoryImpl } from "./mongodb/repositories/company.repository";
 
 const providers: Provider[] = [
   {
-    provide: 'CompanyRepository',
+    provide: "CompanyRepository",
     useClass: CompanyRepositoryImpl,
   },
   {
-    provide: 'CompanyService',
+    provide: "CompanyService",
     useClass: CompanyServiceImpl,
   },
 ];
@@ -23,5 +23,6 @@ const providers: Provider[] = [
   ],
   controllers: [CompanyController],
   providers: providers,
+  exports: [...providers],
 })
 export class CompaniesModule {}

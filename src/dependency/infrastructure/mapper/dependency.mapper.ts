@@ -19,8 +19,8 @@ export class DependencyMapper {
   toDomainCreate(
     dependencyDto: CreateDependencyDto
   ): DomainCreateDependencyDto {
-    const { active, name, description, code, company_id } = dependencyDto;
-    return { active, name, description, code, company_id };
+    const { active, name, description, code } = dependencyDto;
+    return { active, name, description, code };
   }
 
   toDomainUpdate(

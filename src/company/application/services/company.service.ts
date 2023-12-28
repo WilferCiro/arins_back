@@ -29,6 +29,10 @@ export class CompanyServiceImpl implements CompanyService {
     return await this.repository.findById(_id);
   }
 
+  async getByAdminId(_id: string): Promise<Company[]> {
+    return await this.repository.getByAdminId(_id);
+  }
+
   async findPaginated(
     pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<Company>> {

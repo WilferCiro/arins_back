@@ -1,7 +1,7 @@
 // Nestjs
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 // Infraestructure
 
@@ -28,6 +28,12 @@ export class CompanyRepositoryImpl implements CompanyRepository {
 
   async findById(_id: string): Promise<Company> {
     const register = await this.model.findById(_id).lean();
+    return register;
+  }
+  async getByAdminId(_id: string): Promise<Company[]> {
+    const register = await this.model
+      .find({ admin: new Types.ObjectId(_id) })
+      .lean();
     return register;
   }
 

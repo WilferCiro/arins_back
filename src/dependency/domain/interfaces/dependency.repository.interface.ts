@@ -13,11 +13,14 @@ export interface DependencyRepository {
   findById(_id: string): Promise<Dependency>;
   findAll(): Promise<Dependency[]>;
   findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto,
+    company_id: string
   ): Promise<PaginatedResultInterface<Dependency>>;
-  findSelect(query: string): Promise<Dependency[]>;
-
-  create(dependency: DomainCreateDependencyDto): Promise<Dependency>;
+  findSelect(query: string, company_id: string): Promise<Dependency[]>;
+  create(
+    dependency: DomainCreateDependencyDto,
+    company_id: string
+  ): Promise<Dependency>;
   update(
     _id: string,
     dependency: DomainUpdateDependencyDto

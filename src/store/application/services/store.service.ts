@@ -13,12 +13,15 @@ import { DomainUpdateStoreDto } from "src/store/domain/dto/store.update.dto";
 
 // Shared
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
 
 @Injectable()
 export class StoreServiceImpl implements StoreService {
   constructor(
     @Inject("StoreRepository")
-    private readonly repository: StoreRepository
+    private readonly repository: StoreRepository,
+    @Inject("RequestContext")
+    private readonly contextService: RequestContextService
   ) {}
 
   async findAll(): Promise<Store[]> {
@@ -32,15 +35,18 @@ export class StoreServiceImpl implements StoreService {
   async findPaginated(
     pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<Store>> {
-    return await this.repository.findPaginated(pagination);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findPaginated(pagination, company_id);
   }
 
   async findSelect(query: string): Promise<Store[]> {
-    return await this.repository.findSelect(query);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findSelect(query, company_id);
   }
 
   async create(store: DomainCreateStoreDto): Promise<Store> {
-    return await this.repository.create(store);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.create(store, company_id);
   }
 
   async update(_id: string, store: DomainUpdateStoreDto): Promise<Store> {

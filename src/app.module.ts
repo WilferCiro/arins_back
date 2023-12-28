@@ -14,21 +14,20 @@ import { AuthModule } from "./auth/infrastructure/auth.module";
 
 @Module({
   imports: [
-    RequestContextModule,
     HttpModule.register({
       timeout: 5000,
       maxRedirects: 5,
     }),
     CoreModule,
-    AuthModule,
     EmailProvider,
     MongodbProvider,
+    UsersModule,
     AssetsModule,
     CompaniesModule,
     DependenciesModule,
     ProductsModule,
     StoresModule,
-    UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

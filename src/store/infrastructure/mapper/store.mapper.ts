@@ -17,8 +17,8 @@ import { SelectDto } from "src/shared/application/dto/select.dto";
 @Injectable()
 export class StoreMapper {
   toDomainCreate(storeDto: CreateStoreDto): DomainCreateStoreDto {
-    const { active, name, description, code, company_id } = storeDto;
-    return { active, name, description, code, company_id };
+    const { active, name, description, code } = storeDto;
+    return { active, name, description, code };
   }
 
   toDomainUpdate(storeDto: UpdateStoreDto): DomainUpdateStoreDto {

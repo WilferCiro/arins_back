@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
+import { UserDocument } from "src/user/infrastructure/mongodb/schemas/user.schema";
 
 @Schema({ timestamps: true })
 export class CompanyDocument extends Document {
@@ -26,6 +27,9 @@ export class CompanyDocument extends Document {
 
   @Prop({ required: true, default: false })
   active: boolean;
+
+  @Prop({ type: Types.ObjectId, ref: "User" })
+  admin: UserDocument;
 
   @Prop({ default: Date.now })
   createdAt: Date;

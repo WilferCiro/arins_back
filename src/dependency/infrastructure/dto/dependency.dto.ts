@@ -6,7 +6,7 @@ export interface DependencyDto {
   description: string;
   code: string;
   company: CompanyDto;
-  company_id: string;
+  company_id?: string;
   active: boolean;
   createdAt: Date;
   updatedAt: Date;

@@ -22,7 +22,7 @@ import { Store } from "src/store/domain/entities/store.type";
 
 // Shared
 import { BaseController } from "src/shared/application/controllers/base.controller";
-import { AuthGuard } from "src/shared/application/middleware/auth.middleware";
+import { AuthGuard } from "src/shared/infrastructure/middleware/auth.middleware";
 import { PaginationMapper } from "src/shared/application/mapper/pagination.mapper";
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
@@ -73,6 +73,7 @@ export class StoreController extends BaseController {
     return this.mapper.toDto(data);
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() store: CreateStoreDto): Promise<StoreDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(store));
