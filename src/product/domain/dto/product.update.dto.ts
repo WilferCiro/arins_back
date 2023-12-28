@@ -1,4 +1,9 @@
 export class DomainUpdateProductDto {
   name?: string;
-  active?: boolean;
+  description?: string;
+  price?: number;
+  quantity?: number;
+  barcode?: string;
+  presentation?: string;
+  store_id?: string;
 }

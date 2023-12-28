@@ -1,4 +1,4 @@
-export interface ProductDto {
+export interface SellDto {
   id?: number;
   name: string;
   active: boolean;

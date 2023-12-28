@@ -1,6 +1,6 @@
-import { Store } from "src/store/domain/entities/store.type";
+import { StoreDto } from "src/store/infrastructure/dto/store.dto";
 
-export class Product {
+export interface ProductDto {
   id?: number;
   name: string;
   description: string;
@@ -8,8 +8,8 @@ export class Product {
   price: number;
   quantity: number;
   presentation: string;
-  store: Store;
+  store: StoreDto;
   store_id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -1,36 +1,36 @@
 // Nest
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from "@nestjs/common";
 
 // Application
 
 // Domain
-import { Product } from 'src/product/domain/entities/product.type';
-import { ProductRepository } from 'src/product/domain/interfaces/product.repository.interface';
-import { ProductService } from 'src/product/domain/interfaces/product.service.interface';
-import { DomainPaginationDto } from 'src/shared/domain/dto/pagination.dto';
-import { DomainCreateProductDto } from 'src/product/domain/dto/product.create.dto';
-import { DomainUpdateProductDto } from 'src/product/domain/dto/product.update.dto';
+import { Product } from "src/product/domain/entities/product.type";
+import { ProductRepository } from "src/product/domain/interfaces/product.repository.interface";
+import { ProductService } from "src/product/domain/interfaces/product.service.interface";
+import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
+import { DomainCreateProductDto } from "src/product/domain/dto/product.create.dto";
+import { DomainUpdateProductDto } from "src/product/domain/dto/product.update.dto";
 
 // Shared
-import { PaginatedResultInterface } from 'src/shared/application/interfaces/paginated.result.interface';
+import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 
 @Injectable()
 export class ProductServiceImpl implements ProductService {
   constructor(
-    @Inject('ProductRepository')
-    private readonly repository: ProductRepository,
+    @Inject("ProductRepository")
+    private readonly repository: ProductRepository
   ) {}
 
   async findAll(): Promise<Product[]> {
     return await this.repository.findAll();
   }
 
-  async findById(id: number): Promise<Product> {
-    return await this.repository.findById(id);
+  async findById(_id: string): Promise<Product> {
+    return await this.repository.findById(_id);
   }
 
   async findPaginated(
-    pagination: DomainPaginationDto,
+    pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<Product>> {
     return await this.repository.findPaginated(pagination);
   }
@@ -39,7 +39,7 @@ export class ProductServiceImpl implements ProductService {
     return await this.repository.create(product);
   }
 
-  async update(id: number, product: DomainUpdateProductDto): Promise<Product> {
-    return await this.repository.update(id, product);
+  async update(_id: string, product: DomainUpdateProductDto): Promise<Product> {
+    return await this.repository.update(_id, product);
   }
 }

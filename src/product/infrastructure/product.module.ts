@@ -1,6 +1,6 @@
 // Se ubica en infraestructura porque tiene intereacción con la base de datos
 import { Module, Provider } from "@nestjs/common";
-import { ProductController } from "../application/controllers/product.controller";
+import { ProductController } from "./controllers/product.controller";
 import { ProductServiceImpl } from "../application/services/product.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ProductSchema } from "./mongodb/schemas/product.schema";

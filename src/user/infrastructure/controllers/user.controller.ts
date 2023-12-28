@@ -57,12 +57,14 @@ export class UserController extends BaseController {
     return this.mapper.toDto(data);
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() user: CreateUserDto): Promise<UserDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(user));
     return this.mapper.toDto(data);
   }
 
+  @UseGuards(AuthGuard)
   @Post(":_id/restore_password")
   async restorePassword(@Param("_id") _id: string) {
     const data = await this.service.restorePassword(_id);

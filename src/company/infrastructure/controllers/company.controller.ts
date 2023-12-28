@@ -75,6 +75,7 @@ export class CompanyController extends BaseController {
     return this.mapper.toDto(data);
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() company: CreateCompanyDto): Promise<CompanyDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(company));

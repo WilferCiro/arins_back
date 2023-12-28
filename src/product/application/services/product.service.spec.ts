@@ -1,25 +1,25 @@
-import { ProductService } from 'src/product/domain/interfaces/product.service.interface';
-import { Test, TestingModule } from '@nestjs/testing';
-import { ProductServiceImpl } from '../services/product.service';
-import { CreateProductDto } from '../dto/product.create.dto';
+import { ProductService } from "src/product/domain/interfaces/product.service.interface";
+import { Test, TestingModule } from "@nestjs/testing";
+import { ProductServiceImpl } from "../services/product.service";
+import { CreateProductDto } from "../../infrastructure/dto/product.create.dto";
 import {
   productCreateDataFake as registerCreateDataFake,
   productDataFake as registerDataFake,
   productUpdateDataFake as registerUpdateDataFake,
-} from 'src/test/mock/product.sql.fake';
-import { PasswordHelper } from 'src/auth/infrastructure/helpers/PasswordHelper';
-import { FilesModule } from 'src/files/infrastructure/files.module';
-import { MailModule } from 'src/email/infrastructure/email.module';
-import { CoreModule } from 'src/shared/core.module';
-import { ConfigModule } from '@nestjs/config';
-import { EmailProvider } from 'src/shared/infrastructure/email/email.provider';
-import { ProductRepositoryImpl } from 'src/product/infrastructure/sql/repositories/product.repository';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { ProductEntity } from 'src/product/infrastructure/sql/entities/product.entity';
-import { Repository } from 'typeorm';
-import { ProductRepository } from 'src/product/domain/interfaces/product.repository.interface';
+} from "src/test/mock/product.sql.fake";
+import { PasswordHelper } from "src/auth/infrastructure/helpers/PasswordHelper";
+import { FilesModule } from "src/files/infrastructure/files.module";
+import { MailModule } from "src/email/infrastructure/email.module";
+import { CoreModule } from "src/shared/core.module";
+import { ConfigModule } from "@nestjs/config";
+import { EmailProvider } from "src/shared/infrastructure/email/email.provider";
+import { ProductRepositoryImpl } from "src/product/infrastructure/sql/repositories/product.repository";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { ProductEntity } from "src/product/infrastructure/sql/entities/product.entity";
+import { Repository } from "typeorm";
+import { ProductRepository } from "src/product/domain/interfaces/product.repository.interface";
 
-describe('ProductsController', () => {
+describe("ProductsController", () => {
   let productsService: ProductService;
   let productsRepository: ProductRepository;
 
@@ -39,27 +39,27 @@ describe('ProductsController', () => {
         },
         PasswordHelper,
         {
-          provide: 'ProductRepository',
+          provide: "ProductRepository",
           useClass: ProductRepositoryImpl,
         },
         {
-          provide: 'ProductService',
+          provide: "ProductService",
           useClass: ProductServiceImpl,
         },
       ],
     }).compile();
 
-    productsRepository = module.get<ProductRepository>('ProductRepository');
-    productsService = module.get<ProductService>('ProductService');
+    productsRepository = module.get<ProductRepository>("ProductRepository");
+    productsService = module.get<ProductService>("ProductService");
   });
 
-  describe('createProduct', () => {
-    it('should return the created product', async () => {
+  describe("createProduct", () => {
+    it("should return the created product", async () => {
       // Arrange
       const productDto: CreateProductDto = registerCreateDataFake[0];
       const createdProduct = { id: 1, ...productDto };
       jest
-        .spyOn(productsRepository, 'create')
+        .spyOn(productsRepository, "create")
         .mockResolvedValue({ ...createdProduct, password: undefined });
 
       // Act
@@ -70,11 +70,11 @@ describe('ProductsController', () => {
     });
   });
 
-  describe('getProduct', () => {
-    it('should return the requested product by ID', async () => {
+  describe("getProduct", () => {
+    it("should return the requested product by ID", async () => {
       // Arrange
       const product = registerDataFake[0];
-      jest.spyOn(productsRepository, 'findById').mockResolvedValue(product);
+      jest.spyOn(productsRepository, "findById").mockResolvedValue(product);
 
       // Act
       const result = await productsService.findById(product.id);
@@ -82,9 +82,9 @@ describe('ProductsController', () => {
       // Assert
       expect(result).toEqual(product);
     });
-    it('should return paginated', async () => {
+    it("should return paginated", async () => {
       // Arrange
-      jest.spyOn(productsRepository, 'findPaginated').mockResolvedValue({
+      jest.spyOn(productsRepository, "findPaginated").mockResolvedValue({
         total: registerDataFake.length,
         data: registerDataFake,
       });
@@ -93,9 +93,9 @@ describe('ProductsController', () => {
       const result = await productsService.findPaginated({
         page: 0,
         count: 10,
-        sort: '',
+        sort: "",
         sortOrder: 1,
-        search: '',
+        search: "",
       });
 
       // Assert
@@ -106,13 +106,15 @@ describe('ProductsController', () => {
     });
   });
 
-  describe('updateProduct', () => {
-    it('should return the updated product', async () => {
+  describe("updateProduct", () => {
+    it("should return the updated product", async () => {
       // Arrange
       const productId = 1;
       const updatedProductDto = registerUpdateDataFake[0];
       const updatedProduct = registerDataFake[0];
-      jest.spyOn(productsRepository, 'update').mockResolvedValue(updatedProduct);
+      jest
+        .spyOn(productsRepository, "update")
+        .mockResolvedValue(updatedProduct);
 
       // Act
       const result = await productsService.update(productId, updatedProductDto);
