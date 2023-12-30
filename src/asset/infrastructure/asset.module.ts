@@ -1,4 +1,4 @@
-// Se ubica en infraestructura porque tiene intereacción con la base de datos
+// Se ubica en infraestructura porque tiene bases de framework
 import { Module, Provider } from "@nestjs/common";
 import { AssetController } from "./controllers/asset.controller";
 import { AssetServiceImpl } from "../application/services/asset.service";

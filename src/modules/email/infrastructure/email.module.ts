@@ -1,15 +1,15 @@
-// Se ubica en infraestructura porque tiene intereacción con la base de datos
-import { Module, Provider } from '@nestjs/common';
-import { MailRepositoryImpl } from './repositories/email.repository';
-import { MailServiceImp } from '../application/services/email.service';
+// Se ubica en infraestructura porque tiene bases de framework
+import { Module, Provider } from "@nestjs/common";
+import { MailRepositoryImpl } from "./repositories/email.repository";
+import { MailServiceImp } from "../application/services/email.service";
 
 const emailProviders: Provider[] = [
   {
-    provide: 'EmailService',
+    provide: "EmailService",
     useClass: MailServiceImp,
   },
   {
-    provide: 'EmailRepository',
+    provide: "EmailRepository",
     useClass: MailRepositoryImpl,
   },
 ];

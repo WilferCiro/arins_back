@@ -1,15 +1,15 @@
-// Se ubica en infraestructura porque tiene intereacción con la base de datos
-import { Module, Provider } from '@nestjs/common';
-import { FilesServiceImp } from '../application/services/files.service';
-import { FilesRepositoryImpl } from './repositories/files.repository';
+// Se ubica en infraestructura porque tiene bases de framework
+import { Module, Provider } from "@nestjs/common";
+import { FilesServiceImp } from "../application/services/files.service";
+import { FilesRepositoryImpl } from "./repositories/files.repository";
 
 const providers: Provider[] = [
   {
-    provide: 'FilesService',
+    provide: "FilesService",
     useClass: FilesServiceImp,
   },
   {
-    provide: 'FilesRepository',
+    provide: "FilesRepository",
     useClass: FilesRepositoryImpl,
   },
 ];
@@ -19,11 +19,11 @@ const providers: Provider[] = [
   controllers: [],
   providers: [
     {
-      provide: 'FilesService',
+      provide: "FilesService",
       useClass: FilesServiceImp,
     },
     {
-      provide: 'FilesRepository',
+      provide: "FilesRepository",
       useClass: FilesRepositoryImpl,
     },
   ],
