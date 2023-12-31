@@ -1,4 +1,7 @@
 export class DomainUpdateUserDto {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  cellphone?: string;
   active?: boolean;
 }

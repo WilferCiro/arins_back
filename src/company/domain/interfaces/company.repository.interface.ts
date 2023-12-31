@@ -12,10 +12,12 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 export interface CompanyRepository {
   findById(_id: string): Promise<Company>;
   findAll(): Promise<Company[]>;
+  getByAdminId(_id: string): Promise<Company[]>;
   findPaginated(
     pagination: DomainPaginationDto
   ): Promise<PaginatedResultInterface<Company>>;
 
+  findSelect(query: string): Promise<Company[]>;
   create(company: DomainCreateCompanyDto): Promise<Company>;
   update(_id: string, company: DomainUpdateCompanyDto): Promise<Company>;
 }

@@ -1,4 +1,12 @@
 export class DomainCreateAssetDto {
   name: string;
-  active: boolean;
+  description: string;
+  plate: string;
+  serial: string;
+  category: string;
+  price: number;
+  acquisitionDate: Date;
+  dependency_id: string;
+  assessment: string;
+  status: string;
 }

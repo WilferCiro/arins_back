@@ -22,10 +22,11 @@ import { Company } from "src/company/domain/entities/company.type";
 
 // Shared
 import { BaseController } from "src/shared/application/controllers/base.controller";
-import { AuthGuard } from "src/shared/application/middleware/auth.middleware";
+import { AuthGuard } from "src/shared/infrastructure/middleware/auth.middleware";
 import { PaginationMapper } from "src/shared/application/mapper/pagination.mapper";
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { SelectDto } from "src/shared/application/dto/select.dto";
 
 @Controller("companies")
 export class CompanyController extends BaseController {
@@ -60,12 +61,21 @@ export class CompanyController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
+  @Get("select")
+  async findSelect(@Query() query): Promise<SelectDto[]> {
+    const search = query.search || "";
+    const data = await this.service.findSelect(search);
+    return data.map((d: Company) => this.mapper.toDtoSelect(d));
+  }
+
+  @UseGuards(AuthGuard)
   @Get(":_id")
   async findById(@Param("_id") _id: string): Promise<CompanyDto> {
     const data = await this.service.findById(_id);
     return this.mapper.toDto(data);
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() company: CreateCompanyDto): Promise<CompanyDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(company));

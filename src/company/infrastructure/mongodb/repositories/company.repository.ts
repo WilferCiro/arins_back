@@ -1,7 +1,7 @@
 // Nestjs
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 // Infraestructure
 
@@ -30,6 +30,12 @@ export class CompanyRepositoryImpl implements CompanyRepository {
     const register = await this.model.findById(_id).lean();
     return register;
   }
+  async getByAdminId(_id: string): Promise<Company[]> {
+    const register = await this.model
+      .find({ admin: new Types.ObjectId(_id) })
+      .lean();
+    return register;
+  }
 
   async findPaginated(
     pagination: DomainPaginationDto
@@ -43,6 +49,14 @@ export class CompanyRepositoryImpl implements CompanyRepository {
       .skip(pagination.page * pagination.count)
       .limit(pagination.count);
     return { total, data };
+  }
+
+  async findSelect(query: string): Promise<Company[]> {
+    const filters = {
+      name: { $regex: query, $options: "i" },
+    };
+    const data = await this.model.find(filters).lean();
+    return data;
   }
 
   async create(company: DomainCreateCompanyDto): Promise<Company> {
