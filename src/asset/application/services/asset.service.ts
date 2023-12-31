@@ -13,12 +13,17 @@ import { DomainUpdateAssetDto } from "src/asset/domain/dto/asset.update.dto";
 
 // Shared
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { DomainFilterAssetDto } from "src/asset/domain/dto/assets.filter.dto";
+import { assetsExcelHeaders } from "../constants/assets.excel_header";
+import { FilesServiceInterface } from "src/modules/files/domain/interfaces/files.service.interface";
 
 @Injectable()
 export class AssetServiceImpl implements AssetService {
   constructor(
     @Inject("AssetRepository")
-    private readonly repository: AssetRepository
+    private readonly repository: AssetRepository,
+    @Inject("FilesService")
+    private readonly filesService: FilesServiceInterface
   ) {}
 
   async findAll(): Promise<Asset[]> {
@@ -30,13 +35,21 @@ export class AssetServiceImpl implements AssetService {
   }
 
   async findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto & DomainFilterAssetDto
   ): Promise<PaginatedResultInterface<Asset>> {
-    return await this.repository.findPaginated(pagination);
+    const filtersRepo = this.repository.formatFilters(pagination);
+    return await this.repository.findPaginated(pagination, filtersRepo);
   }
 
   async create(asset: DomainCreateAssetDto): Promise<Asset> {
     return await this.repository.create(asset);
+  }
+
+  async export(filters: DomainFilterAssetDto): Promise<Buffer> {
+    const filtersRepo = this.repository.formatFilters(filters);
+    const data = await this.repository.findByFilter(filtersRepo);
+    const columns = assetsExcelHeaders;
+    return this.filesService.generateExcel(data, columns);
   }
 
   async update(_id: string, asset: DomainUpdateAssetDto): Promise<Asset> {

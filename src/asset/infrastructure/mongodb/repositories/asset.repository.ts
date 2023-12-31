@@ -16,6 +16,7 @@ import { DomainUpdateAssetDto } from "src/asset/domain/dto/asset.update.dto";
 // Shared
 import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { DomainFilterAssetDto } from "src/asset/domain/dto/assets.filter.dto";
 
 @Injectable()
 export class AssetRepositoryImpl implements AssetRepository {
@@ -30,13 +31,16 @@ export class AssetRepositoryImpl implements AssetRepository {
     const register = await this.model.findById(_id).lean();
     return register;
   }
+  async findByFilter(filter): Promise<Asset[]> {
+    const assets = await this.model.find(filter).lean();
+    return assets;
+  }
 
   async findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto,
+    filters
   ): Promise<PaginatedResultInterface<Asset>> {
-    const filters = {
-      name: { $regex: pagination.search, $options: "i" },
-    };
+    console.log(filters);
     const total = await this.model.find(filters).countDocuments();
     const data = await this.model
       .find(filters)
@@ -71,5 +75,48 @@ export class AssetRepositoryImpl implements AssetRepository {
     return await this.model
       .findByIdAndUpdate(_id, newData, { new: true })
       .exec();
+  }
+
+  // Filters
+  formatFilters(filters: DomainFilterAssetDto) {
+    let orConditions = [];
+    if (filters.search) {
+      orConditions = [
+        { name: { $regex: filters.search, $options: "i" } },
+        { plate: { $regex: filters.search, $options: "i" } },
+        {
+          description: { $regex: filters.search, $options: "i" },
+        },
+        { serial: { $regex: filters.search, $options: "i" } },
+      ];
+    }
+    const andConditions = {
+      ...(filters.dependency_id
+        ? {
+            dependency: {
+              $in: filters.dependency_id.map((id) => new Types.ObjectId(id)),
+            },
+          }
+        : {}),
+      ...(filters.category
+        ? {
+            category: { $in: filters.category },
+          }
+        : {}),
+      ...(filters.assessment
+        ? {
+            assessment: { $in: filters.assessment },
+          }
+        : {}),
+      ...(filters.status
+        ? {
+            status: { $in: filters.status },
+          }
+        : {}),
+    };
+    return {
+      ...(orConditions.length > 0 ? { $or: orConditions } : {}),
+      ...andConditions,
+    };
   }
 }

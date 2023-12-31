@@ -5,6 +5,7 @@ import { AssetServiceImpl } from "../application/services/asset.service";
 import { AssetSchema } from "./mongodb/schemas/asset.schema";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AssetRepositoryImpl } from "./mongodb/repositories/asset.repository";
+import { FilesModule } from "src/modules/files/infrastructure/files.module";
 
 const providers: Provider[] = [
   {
@@ -19,6 +20,7 @@ const providers: Provider[] = [
 
 @Module({
   imports: [
+    FilesModule,
     MongooseModule.forFeature([{ name: "Asset", schema: AssetSchema }]),
   ],
   controllers: [AssetController],

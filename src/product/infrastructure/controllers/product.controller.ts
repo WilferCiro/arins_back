@@ -40,9 +40,9 @@ export class ProductController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
-  @Get("")
-  async findAll(): Promise<ProductDto[]> {
-    const data = await this.service.findAll();
+  @Get("store/:store_id")
+  async findAll(@Param("store_id") store_id: string): Promise<ProductDto[]> {
+    const data = await this.service.findAll(store_id);
     return data.map((d: Product) => this.mapper.toDto(d));
   }
 

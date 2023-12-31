@@ -21,8 +21,8 @@ export class ProductServiceImpl implements ProductService {
     private readonly repository: ProductRepository
   ) {}
 
-  async findAll(): Promise<Product[]> {
-    return await this.repository.findAll();
+  async findAll(store_id: string): Promise<Product[]> {
+    return await this.repository.findByStoreId(store_id);
   }
 
   async findById(_id: string): Promise<Product> {

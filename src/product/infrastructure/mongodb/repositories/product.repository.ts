@@ -21,8 +21,10 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 export class ProductRepositoryImpl implements ProductRepository {
   constructor(@InjectModel("Product") private readonly model: Model<Product>) {}
 
-  async findAll(): Promise<Product[]> {
-    const products = await this.model.find().lean();
+  async findByStoreId(store_id: string): Promise<Product[]> {
+    const products = await this.model
+      .find({ store: new Types.ObjectId(store_id) })
+      .lean();
     return products;
   }
 

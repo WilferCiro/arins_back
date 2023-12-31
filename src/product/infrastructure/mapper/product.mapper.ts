@@ -10,6 +10,7 @@ import { CreateProductDto } from "../dto/product.create.dto";
 import { UpdateProductDto } from "../dto/product.update.dto";
 import { DomainCreateProductDto } from "src/product/domain/dto/product.create.dto";
 import { DomainUpdateProductDto } from "src/product/domain/dto/product.update.dto";
+import { SelectDto } from "src/shared/application/dto/select.dto";
 
 // Shared
 
