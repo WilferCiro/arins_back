@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { DomainPaginationDto } from 'src/shared/domain/dto/pagination.dto';
-import { PaginatedDto } from '../dto/paginated.get.dto';
+import { Injectable } from "@nestjs/common";
+import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
+import { PaginatedDto } from "../dto/paginated.get.dto";
 
 @Injectable()
 export class PaginationMapper {
@@ -9,9 +9,9 @@ export class PaginationMapper {
     return {
       page: page || 0,
       count: count || 10,
-      sort: sort || 'id',
+      sort: sort || "id",
       sortOrder: sortOrder || -1,
-      search: search || '',
+      search: search || "",
     };
   }
 }

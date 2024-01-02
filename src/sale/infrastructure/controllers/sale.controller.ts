@@ -26,6 +26,7 @@ import { AuthGuard } from "src/shared/infrastructure/middleware/auth.middleware"
 import { PaginationMapper } from "src/shared/application/mapper/pagination.mapper";
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { FilterSaleDto } from "../dto/sale.filter.dto";
 
 @Controller("sales")
 export class SaleController extends BaseController {
@@ -38,19 +39,17 @@ export class SaleController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
-  @Get("")
-  async findAll(): Promise<SaleDto[]> {
-    const data = await this.service.findAll();
-    return data.map((d: Sale) => this.mapper.toDto(d));
-  }
-
-  @UseGuards(AuthGuard)
   @Get("paginated")
   async findPaginated(
-    @Query() paginationDto: PaginatedDto
+    @Query() query: PaginatedDto,
+    @Query() query2: FilterSaleDto
   ): Promise<PaginatedResultInterface<SaleDto>> {
-    const pagination = this.paginationMapper.toDomain(paginationDto);
-    const data = await this.service.findPaginated(pagination);
+    const pagination = this.paginationMapper.toDomain(query);
+    const filters = this.mapper.toDomainFilters(query2);
+    const data = await this.service.findPaginated({
+      ...pagination,
+      createdAt: filters.createdAt,
+    });
     return {
       total: data.total,
       data: data.data.map((d: Sale) => this.mapper.toDto(d)),
@@ -58,9 +57,9 @@ export class SaleController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(":id")
-  async findById(@Param("id") id: number): Promise<SaleDto> {
-    const data = await this.service.findById(id);
+  @Get(":_id")
+  async findById(@Param("_id") _id: string): Promise<SaleDto> {
+    const data = await this.service.findById(_id);
     return this.mapper.toDto(data);
   }
 
@@ -71,13 +70,13 @@ export class SaleController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(":id")
+  @Patch(":_id")
   async update(
-    @Param("id") id: number,
+    @Param("_id") _id: string,
     @Body() sale: UpdateSaleDto
   ): Promise<SaleDto> {
     const data = await this.service.update(
-      id,
+      _id,
       this.mapper.toDomainUpdate(sale)
     );
     return this.mapper.toDto(data);
