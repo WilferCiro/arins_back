@@ -3,11 +3,13 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   Inject,
   Param,
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from "@nestjs/common";
 
@@ -27,6 +29,8 @@ import { PaginationMapper } from "src/shared/application/mapper/pagination.mappe
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 import { FilterSaleDto } from "../dto/sale.filter.dto";
+import { Response } from "express";
+import { CreateSubSaleDto } from "../dto/sale.create_subsale.dto";
 
 @Controller("sales")
 export class SaleController extends BaseController {
@@ -49,6 +53,7 @@ export class SaleController extends BaseController {
     const data = await this.service.findPaginated({
       ...pagination,
       createdAt: filters.createdAt,
+      store_id: filters.store_id,
     });
     return {
       total: data.total,
@@ -67,6 +72,40 @@ export class SaleController extends BaseController {
   async create(@Body() sale: CreateSaleDto): Promise<SaleDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(sale));
     return this.mapper.toDto(data);
+  }
+
+  @Post("subsale")
+  async createSale(@Body() sale: CreateSubSaleDto): Promise<SaleDto> {
+    const data = await this.service.createSubSale(
+      this.mapper.toDomainCreateSubSale(sale)
+    );
+    return this.mapper.toDto(data);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("export")
+  @Header(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  )
+  @Header("Content-Disposition", "attachment; filename=users.xlsx")
+  async export(@Body() filters: FilterSaleDto, @Res() res: Response) {
+    const data = await this.service.export(
+      this.mapper.toDomainFilters(filters)
+    );
+    res.send(data);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("export/:_id")
+  @Header(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  )
+  @Header("Content-Disposition", "attachment; filename=users.xlsx")
+  async exportById(@Param("_id") _id: string, @Res() res: Response) {
+    const data = await this.service.exportById(_id);
+    res.send(data);
   }
 
   @UseGuards(AuthGuard)

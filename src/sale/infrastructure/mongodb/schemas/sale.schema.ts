@@ -1,11 +1,15 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { ProductDocument } from "src/product/infrastructure/mongodb/schemas/product.schema";
+import { StoreDocument } from "src/store/infrastructure/mongodb/schemas/store.schema";
 
 @Schema({ timestamps: true })
 export class SaleDocument extends Document {
   @Prop({ required: true, default: 0 })
   initialMoney: number;
+
+  @Prop({ type: Types.ObjectId, ref: "Store", required: true })
+  store: StoreDocument;
 
   @Prop([
     {
@@ -15,6 +19,7 @@ export class SaleDocument extends Document {
           name: { type: String, required: true },
           price: { type: Number, required: true },
           quantity: { type: Number, required: true },
+          iva: { type: Number, required: true },
         },
       ],
       date: { type: Date, required: true, default: Date.now },

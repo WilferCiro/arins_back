@@ -25,6 +25,7 @@ export class ProductMapper {
       quantity,
       presentation,
       store_id,
+      iva,
     } = productDto;
     return {
       name,
@@ -34,13 +35,14 @@ export class ProductMapper {
       quantity,
       presentation,
       store_id,
+      iva,
     };
   }
 
   toDomainUpdate(productDto: UpdateProductDto): DomainUpdateProductDto {
-    const { name, description, barcode, price, quantity, presentation } =
+    const { name, description, barcode, price, quantity, presentation, iva } =
       productDto;
-    return { name, description, barcode, price, quantity, presentation };
+    return { name, description, barcode, price, quantity, presentation, iva };
   }
 
   toDto(product: Product): ProductDto {

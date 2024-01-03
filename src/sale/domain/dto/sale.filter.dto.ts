@@ -1,3 +1,4 @@
 export class DomainFilterSaleDto {
-  createdAt: [Date, Date];
+  createdAt?: [Date, Date];
+  store_id: string;
 }

@@ -11,6 +11,7 @@ export class Sale {
       name: string;
       price: number;
       quantity: number;
+      iva: number;
     }[];
     date: Date;
   }[];
