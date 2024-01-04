@@ -20,6 +20,9 @@ export class ProductDocument extends Document {
   quantity: number;
 
   @Prop({ required: true })
+  iva: number;
+
+  @Prop({ required: true })
   presentation: string;
 
   @Prop({ type: Types.ObjectId, ref: "Store", required: true })

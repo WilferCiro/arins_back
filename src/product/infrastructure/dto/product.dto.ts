@@ -7,6 +7,7 @@ export interface ProductDto {
   barcode: string;
   price: number;
   quantity: number;
+  iva: number;
   presentation: string;
   store: StoreDto;
   store_id: string;

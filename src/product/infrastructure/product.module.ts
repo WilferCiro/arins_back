@@ -24,5 +24,6 @@ const providers: Provider[] = [
   ],
   controllers: [ProductController],
   providers: providers,
+  exports: [...providers]
 })
 export class ProductsModule {}

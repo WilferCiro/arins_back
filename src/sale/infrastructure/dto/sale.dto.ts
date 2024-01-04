@@ -1,4 +1,5 @@
 import { Product } from "src/product/domain/entities/product.type";
+import { Store } from "src/store/domain/entities/store.type";
 
 export interface SaleDto {
   _id?: string;
@@ -11,6 +12,7 @@ export interface SaleDto {
       name: string;
       price: number;
       quantity: number;
+      iva: number;
     }[];
     date: Date;
   }[];
@@ -19,6 +21,9 @@ export interface SaleDto {
     price: number;
     date: Date;
   }[];
+
+  store: Store,
+  store_id: string;
 
   createdAt: Date;
 }

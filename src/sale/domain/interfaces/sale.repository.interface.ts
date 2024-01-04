@@ -1,21 +1,24 @@
 // Nest
 
 // Domain
-import { DomainCreateSaleDto } from '../dto/sale.create.dto';
-import { DomainUpdateSaleDto } from '../dto/sale.update.dto';
-import { Sale } from '../entities/sale.type';
+import { DomainCreateSaleDto } from "../dto/sale.create.dto";
+import { DomainUpdateSaleDto } from "../dto/sale.update.dto";
+import { Sale } from "../entities/sale.type";
 
 // Shared
-import { DomainPaginationDto } from 'src/shared/domain/dto/pagination.dto';
-import { PaginatedResultInterface } from 'src/shared/application/interfaces/paginated.result.interface';
+import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
+import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { DomainFilterSaleDto } from "../dto/sale.filter.dto";
+import { Product } from "src/product/domain/entities/product.type";
 
 export interface SaleRepository {
-  findById(id: number): Promise<Sale>;
-  findAll(): Promise<Sale[]>;
+  findById(_id: string): Promise<Sale>;
+  findByFilter(filter: DomainFilterSaleDto): Promise<Sale[]>;
   findPaginated(
-    pagination: DomainPaginationDto,
+    pagination: DomainPaginationDto & DomainFilterSaleDto
   ): Promise<PaginatedResultInterface<Sale>>;
 
   create(sale: DomainCreateSaleDto): Promise<Sale>;
-  update(id: number, sale: DomainUpdateSaleDto): Promise<Sale>;
+  createSubSale(products: {product: Product, quantity: number}[], sale_id: string): Promise<Sale>;
+  update(_id: string, sale: DomainUpdateSaleDto): Promise<Sale>;
 }

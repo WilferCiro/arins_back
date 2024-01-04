@@ -40,7 +40,6 @@ export class AssetRepositoryImpl implements AssetRepository {
     pagination: DomainPaginationDto,
     filters
   ): Promise<PaginatedResultInterface<Asset>> {
-    console.log(filters);
     const total = await this.model.find(filters).countDocuments();
     const data = await this.model
       .find(filters)

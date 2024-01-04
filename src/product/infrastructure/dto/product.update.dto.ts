@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from "class-validator";
 
 export class UpdateProductDto {
   @IsOptional()
@@ -6,20 +6,27 @@ export class UpdateProductDto {
   name?: string;
 
   @IsOptional()
-  description: string;
+  description?: string;
 
   @IsOptional()
-  barcode: string;
-
-  @IsOptional()
-  @IsNumber()
-  price: number;
+  barcode?: string;
 
   @IsOptional()
   @IsNumber()
-  quantity: number;
+  @Min(0)
+  price?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(100)
+  iva?: number;
+
+  @IsOptional()
+  @IsNumber()
+  quantity?: number;
 
   @IsOptional()
   @IsNotEmpty()
-  presentation: string;
+  presentation?: string;
 }

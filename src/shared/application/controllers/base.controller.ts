@@ -4,7 +4,7 @@ import { LoggingInterceptor } from '../interceptors/logging.interceptor';
 import { FormatResponseInterceptor } from '../interceptors/format-response.interceptor';
 
 @UseInterceptors(FormatResponseInterceptor)
-@UseFilters(HttpExceptionFilter) // Use http exceptions filters
-@UseInterceptors(LoggingInterceptor) // Use logging interceptor
+//@UseFilters(HttpExceptionFilter) // Use http exceptions filters
+//@UseInterceptors(LoggingInterceptor) // Use logging interceptor
 @Controller()
 export class BaseController {}
