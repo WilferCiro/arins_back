@@ -43,6 +43,7 @@ export class AssetRepositoryImpl implements AssetRepository {
     const total = await this.model.find(filters).countDocuments();
     const data = await this.model
       .find(filters)
+      .sort({ createdAt: -1 })
       .skip(pagination.page * pagination.count)
       .limit(pagination.count)
       .populate({
@@ -61,6 +62,16 @@ export class AssetRepositoryImpl implements AssetRepository {
     };
     const created = new this.model(newData);
     return await created.save();
+  }
+  async createMassive(assets: DomainCreateAssetDto[]): Promise<number> {
+    const newData = assets.map((asset) => ({
+      ...asset,
+      dependency: new Types.ObjectId(asset.dependency_id),
+      dependency_id: undefined,
+    }));
+    const data = await this.model.insertMany(newData);
+    console.log(data);
+    return data.length;
   }
 
   async update(_id: string, asset: DomainUpdateAssetDto): Promise<Asset> {

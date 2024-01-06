@@ -31,6 +31,8 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 import { FilterSaleDto } from "../dto/sale.filter.dto";
 import { Response } from "express";
 import { CreateSubSaleDto } from "../dto/sale.create_subsale.dto";
+import { CreateSaleOrderDto } from "../dto/sale.create_order.dto";
+import { DomainActiveSaleDto } from "src/sale/domain/dto/sale.active.dto";
 
 @Controller("sales")
 export class SaleController extends BaseController {
@@ -62,6 +64,13 @@ export class SaleController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
+  @Get("active")
+  async findActive(): Promise<DomainActiveSaleDto[]> {
+    const data = await this.service.findActive();
+    return data.map((d: DomainActiveSaleDto) => this.mapper.toDtoActive(d));
+  }
+
+  @UseGuards(AuthGuard)
   @Get(":_id")
   async findById(@Param("_id") _id: string): Promise<SaleDto> {
     const data = await this.service.findById(_id);
@@ -78,6 +87,14 @@ export class SaleController extends BaseController {
   async createSale(@Body() sale: CreateSubSaleDto): Promise<SaleDto> {
     const data = await this.service.createSubSale(
       this.mapper.toDomainCreateSubSale(sale)
+    );
+    return this.mapper.toDto(data);
+  }
+
+  @Post("order")
+  async createOrder(@Body() sale: CreateSaleOrderDto): Promise<SaleDto> {
+    const data = await this.service.createOrder(
+      this.mapper.toDomainCreateOrder(sale)
     );
     return this.mapper.toDto(data);
   }

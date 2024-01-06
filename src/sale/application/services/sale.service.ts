@@ -19,6 +19,12 @@ import { FilesServiceInterface } from "src/modules/files/domain/interfaces/files
 import { saleIdExcelHeaders } from "../constants/sale_id.excel_header";
 import { DomainCreateSubSaleDto } from "src/sale/domain/dto/sale.subsale_create.dto";
 import { ProductService } from "src/product/domain/interfaces/product.service.interface";
+import { DomainCreateSaleOrderDto } from "src/sale/domain/dto/sale.order_create.dto";
+import { StoreService } from "src/store/domain/interfaces/store.service.interface";
+import { DomainActiveSaleDto } from "src/sale/domain/dto/sale.active.dto";
+import * as dayjs from "dayjs";
+import * as utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 
 @Injectable()
 export class SaleServiceImpl implements SaleService {
@@ -28,7 +34,9 @@ export class SaleServiceImpl implements SaleService {
     @Inject("FilesService")
     private readonly filesService: FilesServiceInterface,
     @Inject("ProductService")
-    private readonly productService: ProductService
+    private readonly productService: ProductService,
+    @Inject("StoreService")
+    private readonly storeService: StoreService
   ) {}
 
   async findById(_id: string): Promise<Sale> {
@@ -41,20 +49,52 @@ export class SaleServiceImpl implements SaleService {
     return await this.repository.findPaginated(pagination);
   }
 
+  async findActive(): Promise<DomainActiveSaleDto[]> {
+    const stores = await this.storeService.findAll();
+
+    const dataPromises = stores.map(async (store) => {
+      const sale = await this.repository.findByFilter({
+        createdAt: [
+          dayjs().startOf("day").utc().toDate(),
+          dayjs().endOf("day").utc().toDate(),
+        ],
+        store_id: store._id,
+      });
+
+      console.log(sale);
+      return {
+        store: {
+          _id: store._id,
+          name: store.name,
+        },
+        active: sale.length > 0,
+        sale: sale?.[0]?._id,
+      };
+    });
+
+    const data = await Promise.all(dataPromises);
+
+    return data;
+  }
+
   async create(sale: DomainCreateSaleDto): Promise<Sale> {
     return await this.repository.create(sale);
   }
 
-  async createSubSale(subsale: DomainCreateSubSaleDto): Promise<Sale> {    
+  async createSubSale(subsale: DomainCreateSubSaleDto): Promise<Sale> {
     const productPromises = subsale.products.map(async (product) => {
       const productObj = await this.productService.findById(product._id);
-      return {product: productObj, quantity: product.quantity};
+      return { product: productObj, quantity: product.quantity };
     });
     const products = await Promise.all(productPromises);
 
     const sale = await this.repository.createSubSale(products, subsale.sale_id);
     return sale;
-    
+  }
+
+  async createOrder(order: DomainCreateSaleOrderDto): Promise<Sale> {
+    const sale = await this.repository.createOrder(order);
+    return sale;
   }
 
   async export(filters: DomainFilterSaleDto): Promise<Buffer> {

@@ -14,6 +14,9 @@ import { FilterSaleDto } from "../dto/sale.filter.dto";
 import { DomainFilterSaleDto } from "src/sale/domain/dto/sale.filter.dto";
 import { CreateSubSaleDto } from "../dto/sale.create_subsale.dto";
 import { DomainCreateSubSaleDto } from "src/sale/domain/dto/sale.subsale_create.dto";
+import { CreateSaleOrderDto } from "../dto/sale.create_order.dto";
+import { DomainCreateSaleOrderDto } from "src/sale/domain/dto/sale.order_create.dto";
+import { DomainActiveSaleDto } from "src/sale/domain/dto/sale.active.dto";
 
 // Shared
 
@@ -27,8 +30,16 @@ export class SaleMapper {
   toDomainCreateSubSale(saleDto: CreateSubSaleDto): DomainCreateSubSaleDto {
     return {
       products: saleDto.products,
-      sale_id: saleDto.sale_id
-    }
+      sale_id: saleDto.sale_id,
+    };
+  }
+
+  toDomainCreateOrder(orderDto: CreateSaleOrderDto): DomainCreateSaleOrderDto {
+    return {
+      price: orderDto.price,
+      sale_id: orderDto.sale_id,
+      description: orderDto.description,
+    };
   }
 
   toDomainUpdate(saleDto: UpdateSaleDto): DomainUpdateSaleDto {
@@ -39,11 +50,15 @@ export class SaleMapper {
     const { createdAt, store_id } = filtersDto;
     return {
       createdAt,
-      store_id
+      store_id,
     };
   }
 
   toDto(sale: Sale): SaleDto {
-    return sale as SaleDto;
+    return { ...sale, store_id: sale.store._id } as SaleDto;
+  }
+
+  toDtoActive(sales: DomainActiveSaleDto) {
+    return sales;
   }
 }

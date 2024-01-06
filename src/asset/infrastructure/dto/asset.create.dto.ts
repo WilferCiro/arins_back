@@ -1,10 +1,14 @@
+import { Type } from "class-transformer";
 import {
+  IsArray,
   IsDateString,
-  IsISO8601,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsString,
   ValidateIf,
+  ValidateNested,
 } from "class-validator";
 
 export class CreateAssetDto {
@@ -32,11 +36,23 @@ export class CreateAssetDto {
   acquisitionDate?: Date;
 
   @IsNotEmpty()
+  @IsString()
   dependency_id: string;
 
   @IsNotEmpty()
+  @IsString()
+  @IsIn(["Bueno", "Regular", "Malo"])
   assessment: string;
 
   @IsNotEmpty()
+  @IsString()
+  @IsIn(["Activo", "Inactivo", "Dado de baja"])
   status: string;
+}
+
+export class CreateAssetMassiveDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAssetDto)
+  assets: CreateAssetDto[];
 }

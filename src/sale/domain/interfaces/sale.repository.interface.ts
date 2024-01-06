@@ -10,6 +10,7 @@ import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 import { DomainFilterSaleDto } from "../dto/sale.filter.dto";
 import { Product } from "src/product/domain/entities/product.type";
+import { DomainCreateSaleOrderDto } from "../dto/sale.order_create.dto";
 
 export interface SaleRepository {
   findById(_id: string): Promise<Sale>;
@@ -20,5 +21,6 @@ export interface SaleRepository {
 
   create(sale: DomainCreateSaleDto): Promise<Sale>;
   createSubSale(products: {product: Product, quantity: number}[], sale_id: string): Promise<Sale>;
+  createOrder(order: DomainCreateSaleOrderDto): Promise<Sale>;
   update(_id: string, sale: DomainUpdateSaleDto): Promise<Sale>;
 }

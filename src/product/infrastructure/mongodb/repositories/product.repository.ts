@@ -42,6 +42,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     const total = await this.model.find(filters).countDocuments();
     const data = await this.model
       .find(filters)
+      .sort({ createdAt: -1 })
       .skip(pagination.page * pagination.count)
       .limit(pagination.count)
       .populate({

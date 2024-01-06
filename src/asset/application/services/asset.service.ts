@@ -26,10 +26,6 @@ export class AssetServiceImpl implements AssetService {
     private readonly filesService: FilesServiceInterface
   ) {}
 
-  async findAll(): Promise<Asset[]> {
-    return await this.repository.findAll();
-  }
-
   async findById(_id: string): Promise<Asset> {
     return await this.repository.findById(_id);
   }
@@ -37,12 +33,16 @@ export class AssetServiceImpl implements AssetService {
   async findPaginated(
     pagination: DomainPaginationDto & DomainFilterAssetDto
   ): Promise<PaginatedResultInterface<Asset>> {
+    // TODO: add filter company
     const filtersRepo = this.repository.formatFilters(pagination);
     return await this.repository.findPaginated(pagination, filtersRepo);
   }
 
   async create(asset: DomainCreateAssetDto): Promise<Asset> {
     return await this.repository.create(asset);
+  }
+  async createMassive(assets: DomainCreateAssetDto[]): Promise<number> {
+    return await this.repository.createMassive(assets);
   }
 
   async export(filters: DomainFilterAssetDto): Promise<Buffer> {

@@ -7,6 +7,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { SaleSchema } from "./mongodb/schemas/sale.schema";
 import { FilesModule } from "src/modules/files/infrastructure/files.module";
 import { ProductsModule } from "src/product/infrastructure/product.module";
+import { StoresModule } from "src/store/infrastructure/store.module";
 
 const providers: Provider[] = [
   {
@@ -21,6 +22,7 @@ const providers: Provider[] = [
 
 @Module({
   imports: [
+    StoresModule,
     ProductsModule,
     FilesModule,
     MongooseModule.forFeature([{ name: "Sale", schema: SaleSchema }]),

@@ -20,6 +20,7 @@ import { DomainFilterSaleDto } from "src/sale/domain/dto/sale.filter.dto";
 import { DomainCreateSubSaleDto } from "src/sale/domain/dto/sale.subsale_create.dto";
 import { Product } from "src/product/domain/entities/product.type";
 import { Type } from "class-transformer";
+import { DomainCreateSaleOrderDto } from "src/sale/domain/dto/sale.order_create.dto";
 
 @Injectable()
 export class SaleRepositoryImpl implements SaleRepository {
@@ -32,7 +33,13 @@ export class SaleRepositoryImpl implements SaleRepository {
   }
 
   async findById(_id: string): Promise<Sale> {
-    const register = await this.model.findById(_id).lean();
+    const register = await this.model
+      .findById(_id)
+      .populate({
+        path: "store",
+        select: "name _id",
+      })
+      .lean();
     return register;
   }
 
@@ -42,8 +49,8 @@ export class SaleRepositoryImpl implements SaleRepository {
       ...(filter.createdAt && filter.createdAt.length > 0
         ? {
             createdAt: {
-              $lte: filter.createdAt[1],
-              $gte: filter.createdAt[0],
+              $lte: filter.createdAt[1].toISOString(),
+              $gte: filter.createdAt[0].toISOString(),
             },
           }
         : {}),
@@ -58,6 +65,7 @@ export class SaleRepositoryImpl implements SaleRepository {
     const total = await this.model.find(filters).countDocuments();
     const data = await this.model
       .find(filters)
+      .sort({ createdAt: -1 })
       .skip(pagination.page * pagination.count)
       .limit(pagination.count)
       .populate({
@@ -87,7 +95,6 @@ export class SaleRepositoryImpl implements SaleRepository {
     if (!sale) {
       throw new HttpException("No existe la venta", 400);
     }
-    console.log(products);
     const prods = products.map((product) => ({
       original: product.product,
       original_id: product.product._id,
@@ -102,6 +109,22 @@ export class SaleRepositoryImpl implements SaleRepository {
     });
     const finalSale = await this.model
       .findByIdAndUpdate(sale_id, sale, { new: true })
+      .exec();
+    return finalSale;
+  }
+
+  async createOrder(order: DomainCreateSaleOrderDto): Promise<Sale> {
+    const sale = await this.model.findById(order.sale_id).lean();
+    if (!sale) {
+      throw new HttpException("No existe la venta", 400);
+    }
+    sale.orders.push({
+      date: new Date(),
+      description: order?.description || "",
+      price: order.price,
+    });
+    const finalSale = await this.model
+      .findByIdAndUpdate(order.sale_id, sale, { new: true })
       .exec();
     return finalSale;
   }

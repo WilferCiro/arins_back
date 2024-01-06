@@ -16,7 +16,7 @@ import { Response } from "express";
 
 // Application
 import { AssetMapper } from "../mapper/asset.mapper";
-import { CreateAssetDto } from "../dto/asset.create.dto";
+import { CreateAssetDto, CreateAssetMassiveDto } from "../dto/asset.create.dto";
 import { UpdateAssetDto } from "../dto/asset.update.dto";
 import { AssetDto } from "../dto/asset.dto";
 // Domain
@@ -39,13 +39,6 @@ export class AssetController extends BaseController {
     super();
     this.mapper = new AssetMapper();
     this.paginationMapper = new PaginationMapper();
-  }
-
-  @UseGuards(AuthGuard)
-  @Get("")
-  async findAll(): Promise<AssetDto[]> {
-    const data = await this.service.findAll();
-    return data.map((d: Asset) => this.mapper.toDto(d));
   }
 
   @UseGuards(AuthGuard)
@@ -77,6 +70,17 @@ export class AssetController extends BaseController {
   async create(@Body() asset: CreateAssetDto): Promise<AssetDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(asset));
     return this.mapper.toDto(data);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("massive")
+  async massive(@Body() { assets }: CreateAssetMassiveDto): Promise<number> {
+    console.log(assets);
+    const assetsDomain = assets.map((asset) =>
+      this.mapper.toDomainCreate(asset)
+    );
+    const data = await this.service.createMassive(assetsDomain);
+    return data;
   }
 
   @UseGuards(AuthGuard)
