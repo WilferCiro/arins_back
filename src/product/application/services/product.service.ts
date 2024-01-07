@@ -13,12 +13,17 @@ import { DomainUpdateProductDto } from "src/product/domain/dto/product.update.dt
 
 // Shared
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { DomainFilterProductDto } from "src/product/domain/dto/product.filter.dto";
+import { productExcelHeaders } from "../constants/products.excel_header";
+import { FilesServiceInterface } from "src/modules/files/domain/interfaces/files.service.interface";
 
 @Injectable()
 export class ProductServiceImpl implements ProductService {
   constructor(
     @Inject("ProductRepository")
-    private readonly repository: ProductRepository
+    private readonly repository: ProductRepository,
+    @Inject("FilesService")
+    private readonly filesService: FilesServiceInterface
   ) {}
 
   async findAll(store_id: string): Promise<Product[]> {
@@ -37,6 +42,21 @@ export class ProductServiceImpl implements ProductService {
 
   async create(product: DomainCreateProductDto): Promise<Product> {
     return await this.repository.create(product);
+  }
+
+  async createMassive(assets: DomainCreateProductDto[]): Promise<number> {
+    return await this.repository.createMassive(assets);
+  }
+
+  async export(filters: DomainFilterProductDto): Promise<Buffer> {
+    const data = await this.repository.findByFilter(filters);
+    const newData = data.map((dep) => ({
+      ...dep,
+      store: dep.store.name,
+      store_id: undefined,
+    }));
+    const columns = productExcelHeaders;
+    return this.filesService.generateExcel(newData, columns);
   }
 
   async update(_id: string, product: DomainUpdateProductDto): Promise<Product> {

@@ -37,6 +37,7 @@ export class AssetServiceImpl implements AssetService {
   async findPaginated(
     pagination: DomainPaginationDto & DomainFilterAssetDto
   ): Promise<PaginatedResultInterface<Asset>> {
+    // TODO: add filter company
     const filtersRepo = this.repository.formatFilters(pagination);
     return await this.repository.findPaginated(pagination, filtersRepo);
   }
@@ -44,12 +45,19 @@ export class AssetServiceImpl implements AssetService {
   async create(asset: DomainCreateAssetDto): Promise<Asset> {
     return await this.repository.create(asset);
   }
+  async createMassive(assets: DomainCreateAssetDto[]): Promise<number> {
+    return await this.repository.createMassive(assets);
+  }
 
   async export(filters: DomainFilterAssetDto): Promise<Buffer> {
     const filtersRepo = this.repository.formatFilters(filters);
     const data = await this.repository.findByFilter(filtersRepo);
+    const newData = data.map((dep) => ({
+      ...dep,
+      dependency: dep.dependency.name,
+    }));
     const columns = assetsExcelHeaders;
-    return this.filesService.generateExcel(data, columns);
+    return this.filesService.generateExcel(newData, columns);
   }
 
   async update(_id: string, asset: DomainUpdateAssetDto): Promise<Asset> {

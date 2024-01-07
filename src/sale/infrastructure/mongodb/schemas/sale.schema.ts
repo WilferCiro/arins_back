@@ -53,3 +53,8 @@ export class SaleDocument extends Document {
 }
 
 export const SaleSchema = SchemaFactory.createForClass(SaleDocument);
+
+SaleSchema.index({
+  createdAt: -1,
+  store: 1,
+});

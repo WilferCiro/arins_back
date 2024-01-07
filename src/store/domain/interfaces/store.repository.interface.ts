@@ -11,7 +11,7 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 
 export interface StoreRepository {
   findById(_id: string): Promise<Store>;
-  findAll(): Promise<Store[]>;
+  findAll(company_id: string): Promise<Store[]>;
   findPaginated(
     pagination: DomainPaginationDto,
     company_id: string

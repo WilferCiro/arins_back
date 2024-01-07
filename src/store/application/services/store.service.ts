@@ -25,7 +25,8 @@ export class StoreServiceImpl implements StoreService {
   ) {}
 
   async findAll(): Promise<Store[]> {
-    return await this.repository.findAll();
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findAll(company_id);
   }
 
   async findById(_id: string): Promise<Store> {

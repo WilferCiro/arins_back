@@ -1192,6 +1192,8 @@
 
 "@types/supertest@^6.0.2":
   version "6.0.2"
+  resolved "https://registry.npmjs.org/@types/supertest/-/supertest-6.0.2.tgz"
+  integrity sha512-137ypx2lk/wTQbW6An6safu9hXmajAifU/s7szAHLN/FeIm5w7yR0Wkl9fdJMRSHwOn4HLAI0DaB2TOORuhPDg==
   dependencies:
     "@types/methods" "^1.1.4"
     "@types/superagent" "^8.1.0"
@@ -2516,6 +2518,11 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+crypto-js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-4.2.0.tgz"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
+
 css-inline@0.11.2:
   version "0.11.2"
   resolved "https://registry.npmjs.org/css-inline/-/css-inline-0.11.2.tgz"
@@ -2549,7 +2556,7 @@ date-fns@^2.29.3:
   dependencies:
     "@babel/runtime" "^7.21.0"
 
-dayjs@^1.8.34:
+dayjs@^1.11.10, dayjs@^1.8.34:
   version "1.11.10"
   resolved "https://registry.npmjs.org/dayjs/-/dayjs-1.11.10.tgz"
   integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==

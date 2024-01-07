@@ -1,4 +1,5 @@
 import { Product } from "src/product/domain/entities/product.type";
+import { Store } from "src/store/domain/entities/store.type";
 
 export class Sale {
   _id?: string;
@@ -20,6 +21,8 @@ export class Sale {
     price: number;
     date: Date;
   }[];
+
+  store: Store;
 
   createdAt?: Date;
 }

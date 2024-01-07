@@ -1,15 +1,13 @@
-import { ArrayMinSize, IsNotEmpty, IsNumber } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
-class ProductDto {
+export class CreateSaleOrderDto {
   @IsNotEmpty()
-  _id: string;
+  sale_id: string;
 
   @IsNotEmpty()
   @IsNumber()
-  quantity: number;
-}
+  price: number;
 
-export class CreateSaleOrderDto {
-  @ArrayMinSize(1, { message: "Debe haber al menos un producto en la lista." })
-  products: ProductDto[];
+  @IsOptional()
+  description?: string;
 }

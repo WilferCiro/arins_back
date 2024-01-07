@@ -43,4 +43,11 @@ export class AssetDocument extends Document {
 
 export const AssetSchema = SchemaFactory.createForClass(AssetDocument);
 
-AssetSchema.index({ name: 1, dependency: 1, serial: 1, plate: 1, category: 1 });
+AssetSchema.index({
+  name: 1,
+  dependency: 1,
+  serial: 1,
+  plate: 1,
+  category: 1,
+  createdAt: -1,
+});

@@ -22,5 +22,6 @@ export interface AssetRepository {
   findByFilter(filters): Promise<Asset[]>;
 
   create(asset: DomainCreateAssetDto): Promise<Asset>;
+  createMassive(assets: DomainCreateAssetDto[]): Promise<number>;
   update(_id: string, asset: DomainUpdateAssetDto): Promise<Asset>;
 }

@@ -36,6 +36,38 @@ export class CompanyDocument extends Document {
 
   @Prop({ default: Date.now })
   updatedAt: Date;
+
+  @Prop({
+    type: {
+      inventory: {
+        price: Number,
+        expiration: Date,
+      },
+      sales: {
+        price: Number,
+        expiration: Date,
+      },
+      entry: {
+        price: Number,
+        expiration: Date,
+      },
+    },
+    default: {},
+  })
+  access?: {
+    inventory?: {
+      price: number;
+      expiration: Date;
+    };
+    sales?: {
+      price: number;
+      expiration: Date;
+    };
+    entry?: {
+      price: number;
+      expiration: Date;
+    };
+  };
 }
 
 export const CompanySchema = SchemaFactory.createForClass(CompanyDocument);

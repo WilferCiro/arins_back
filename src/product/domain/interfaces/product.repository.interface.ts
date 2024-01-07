@@ -8,6 +8,7 @@ import { Product } from "../entities/product.type";
 // Shared
 import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { DomainFilterProductDto } from "../dto/product.filter.dto";
 
 export interface ProductRepository {
   findById(_id: string): Promise<Product>;
@@ -17,5 +18,7 @@ export interface ProductRepository {
   ): Promise<PaginatedResultInterface<Product>>;
 
   create(product: DomainCreateProductDto): Promise<Product>;
+  createMassive(product: DomainCreateProductDto[]): Promise<number>;
+  findByFilter(filters: DomainFilterProductDto): Promise<Product[]>;
   update(_id: string, product: DomainUpdateProductDto): Promise<Product>;
 }

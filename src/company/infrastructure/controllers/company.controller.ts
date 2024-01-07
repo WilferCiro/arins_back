@@ -15,7 +15,7 @@ import {
 import { CompanyMapper } from "../mapper/company.mapper";
 import { CreateCompanyDto } from "../dto/company.create.dto";
 import { UpdateCompanyDto } from "../dto/company.update.dto";
-import { CompanyDto } from "../dto/company.dto";
+import { CompanyAccessDto, CompanyDto } from "../dto/company.dto";
 // Domain
 import { CompanyService } from "src/company/domain/interfaces/company.service.interface";
 import { Company } from "src/company/domain/entities/company.type";
@@ -45,6 +45,13 @@ export class CompanyController extends BaseController {
   async findAll(): Promise<CompanyDto[]> {
     const data = await this.service.findAll();
     return data.map((d: Company) => this.mapper.toDto(d));
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("/access")
+  async findAccess(): Promise<CompanyAccessDto> {
+    const data = await this.service.findCurrent();
+    return this.mapper.toDtoAccess(data);
   }
 
   @UseGuards(AuthGuard)
