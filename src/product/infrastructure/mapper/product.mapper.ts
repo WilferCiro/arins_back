@@ -11,6 +11,8 @@ import { UpdateProductDto } from "../dto/product.update.dto";
 import { DomainCreateProductDto } from "src/product/domain/dto/product.create.dto";
 import { DomainUpdateProductDto } from "src/product/domain/dto/product.update.dto";
 import { SelectDto } from "src/shared/application/dto/select.dto";
+import { FilterProductDto } from "../dto/product.filter.dto";
+import { DomainFilterProductDto } from "src/product/domain/dto/product.filter.dto";
 
 // Shared
 
@@ -50,5 +52,9 @@ export class ProductMapper {
       ...product,
       store_id: product.store?._id,
     } as ProductDto;
+  }
+
+  toDomainFilters(filters: FilterProductDto): DomainFilterProductDto {
+    return filters as DomainFilterProductDto;
   }
 }

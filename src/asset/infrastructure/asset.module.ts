@@ -25,5 +25,6 @@ const providers: Provider[] = [
   ],
   controllers: [AssetController],
   providers: providers,
+  exports: providers,
 })
 export class AssetsModule {}

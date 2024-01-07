@@ -3,17 +3,22 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   Inject,
   Param,
   Patch,
   Post,
   Query,
+  Res,
   UseGuards,
 } from "@nestjs/common";
 
 // Application
 import { ProductMapper } from "../mapper/product.mapper";
-import { CreateProductDto } from "../dto/product.create.dto";
+import {
+  CreateProductDto,
+  CreateProductMassiveDto,
+} from "../dto/product.create.dto";
 import { UpdateProductDto } from "../dto/product.update.dto";
 import { ProductDto } from "../dto/product.dto";
 // Domain
@@ -26,6 +31,8 @@ import { AuthGuard } from "src/shared/infrastructure/middleware/auth.middleware"
 import { PaginationMapper } from "src/shared/application/mapper/pagination.mapper";
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { Response } from "express";
+import { FilterProductDto } from "../dto/product.filter.dto";
 
 @Controller("products")
 export class ProductController extends BaseController {
@@ -71,6 +78,30 @@ export class ProductController extends BaseController {
   async create(@Body() product: CreateProductDto): Promise<ProductDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(product));
     return this.mapper.toDto(data);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("massive")
+  async massive(@Body() { assets }: CreateProductMassiveDto): Promise<number> {
+    const assetsDomain = assets.map((asset) =>
+      this.mapper.toDomainCreate(asset)
+    );
+    const data = await this.service.createMassive(assetsDomain);
+    return data;
+  }
+
+  @UseGuards(AuthGuard)
+  @Post("export")
+  @Header(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  )
+  @Header("Content-Disposition", "attachment; filename=users.xlsx")
+  async export(@Body() filters: FilterProductDto, @Res() res: Response) {
+    const data = await this.service.export(
+      this.mapper.toDomainFilters(filters)
+    );
+    res.send(data);
   }
 
   @UseGuards(AuthGuard)

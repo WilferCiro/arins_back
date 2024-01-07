@@ -13,16 +13,24 @@ import { DomainUpdateCompanyDto } from "src/company/domain/dto/company.update.dt
 
 // Shared
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
 
 @Injectable()
 export class CompanyServiceImpl implements CompanyService {
   constructor(
     @Inject("CompanyRepository")
-    private readonly repository: CompanyRepository
+    private readonly repository: CompanyRepository,
+    @Inject("RequestContext")
+    private readonly contextService: RequestContextService
   ) {}
 
   async findAll(): Promise<Company[]> {
     return await this.repository.findAll();
+  }
+
+  async findCurrent(): Promise<Company> {
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.findById(company_id);
   }
 
   async findById(_id: string): Promise<Company> {

@@ -23,16 +23,34 @@ export class AssetRepositoryImpl implements AssetRepository {
   constructor(@InjectModel("Asset") private readonly model: Model<Asset>) {}
 
   async findAll(): Promise<Asset[]> {
-    const assets = await this.model.find().lean();
+    const assets = await this.model
+      .find()
+      .populate({
+        path: "dependency",
+        select: "name _id",
+      })
+      .lean();
     return assets;
   }
 
   async findById(_id: string): Promise<Asset> {
-    const register = await this.model.findById(_id).lean();
+    const register = await this.model
+      .findById(_id)
+      .populate({
+        path: "dependency",
+        select: "name _id",
+      })
+      .lean();
     return register;
   }
   async findByFilter(filter): Promise<Asset[]> {
-    const assets = await this.model.find(filter).lean();
+    const assets = await this.model
+      .find(filter)
+      .populate({
+        path: "dependency",
+        select: "name _id",
+      })
+      .lean();
     return assets;
   }
 
@@ -70,7 +88,6 @@ export class AssetRepositoryImpl implements AssetRepository {
       dependency_id: undefined,
     }));
     const data = await this.model.insertMany(newData);
-    console.log(data);
     return data.length;
   }
 

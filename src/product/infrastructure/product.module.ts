@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ProductSchema } from "./mongodb/schemas/product.schema";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ProductRepositoryImpl } from "./mongodb/repositories/product.repository";
+import { FilesModule } from "src/modules/files/infrastructure/files.module";
 
 const providers: Provider[] = [
   {
@@ -20,10 +21,11 @@ const providers: Provider[] = [
 
 @Module({
   imports: [
+    FilesModule,
     MongooseModule.forFeature([{ name: "Product", schema: ProductSchema }]),
   ],
   controllers: [ProductController],
   providers: providers,
-  exports: [...providers]
+  exports: [...providers],
 })
 export class ProductsModule {}

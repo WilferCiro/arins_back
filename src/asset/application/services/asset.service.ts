@@ -26,6 +26,10 @@ export class AssetServiceImpl implements AssetService {
     private readonly filesService: FilesServiceInterface
   ) {}
 
+  async findAll(): Promise<Asset[]> {
+    return await this.repository.findAll();
+  }
+
   async findById(_id: string): Promise<Asset> {
     return await this.repository.findById(_id);
   }
@@ -48,8 +52,12 @@ export class AssetServiceImpl implements AssetService {
   async export(filters: DomainFilterAssetDto): Promise<Buffer> {
     const filtersRepo = this.repository.formatFilters(filters);
     const data = await this.repository.findByFilter(filtersRepo);
+    const newData = data.map((dep) => ({
+      ...dep,
+      dependency: dep.dependency.name,
+    }));
     const columns = assetsExcelHeaders;
-    return this.filesService.generateExcel(data, columns);
+    return this.filesService.generateExcel(newData, columns);
   }
 
   async update(_id: string, asset: DomainUpdateAssetDto): Promise<Asset> {

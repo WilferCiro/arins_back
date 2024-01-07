@@ -75,7 +75,6 @@ export class AssetController extends BaseController {
   @UseGuards(AuthGuard)
   @Post("massive")
   async massive(@Body() { assets }: CreateAssetMassiveDto): Promise<number> {
-    console.log(assets);
     const assetsDomain = assets.map((asset) =>
       this.mapper.toDomainCreate(asset)
     );

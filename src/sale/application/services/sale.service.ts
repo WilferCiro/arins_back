@@ -60,8 +60,6 @@ export class SaleServiceImpl implements SaleService {
         ],
         store_id: store._id,
       });
-
-      console.log(sale);
       return {
         store: {
           _id: store._id,

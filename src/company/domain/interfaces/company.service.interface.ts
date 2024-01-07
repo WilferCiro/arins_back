@@ -11,6 +11,7 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 
 export interface CompanyService {
   findById(_id: string): Promise<Company>;
+  findCurrent(): Promise<Company>;
   findAll(): Promise<Company[]>;
   getByAdminId(_id: string): Promise<Company[]>;
   findPaginated(

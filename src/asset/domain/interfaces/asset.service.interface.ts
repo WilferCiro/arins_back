@@ -11,6 +11,7 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 import { DomainFilterAssetDto } from "../dto/assets.filter.dto";
 
 export interface AssetService {
+  findAll(): Promise<Asset[]>;
   findById(_id: string): Promise<Asset>;
   findPaginated(
     pagination: DomainPaginationDto & DomainFilterAssetDto

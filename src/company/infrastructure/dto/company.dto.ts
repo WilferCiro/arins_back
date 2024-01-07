@@ -1,3 +1,21 @@
+export class CompanyAccessDto {
+  inventory?: {
+    price: number;
+    expiration: Date;
+    active?: boolean;
+  };
+  sales?: {
+    price: number;
+    expiration: Date;
+    active?: boolean;
+  };
+  entry?: {
+    price: number;
+    expiration: Date;
+    active?: boolean;
+  };
+}
+
 export interface CompanyDto {
   _id?: string;
   name: string;
@@ -10,4 +28,5 @@ export interface CompanyDto {
   active: boolean;
   createdAt: Date;
   updatedAt: Date;
+  access?: CompanyAccessDto;
 }

@@ -1,4 +1,13 @@
-import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from "class-validator";
+import { Type } from "class-transformer";
+import {
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  Max,
+  Min,
+  ValidateNested,
+} from "class-validator";
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -28,4 +37,11 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   store_id: string;
+}
+
+export class CreateProductMassiveDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateProductDto)
+  assets: CreateProductDto[];
 }
