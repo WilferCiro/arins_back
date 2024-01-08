@@ -33,16 +33,16 @@ export class ApiKeyGuard implements CanActivate {
     try {
       const request = context.switchToHttp().getRequest();
       const token = this.extractTokenFromHeader(request);
-      if (this.usedKeys.includes(token)) {
+      /*if (this.usedKeys.includes(token)) {
         throw new UnauthorizedException();
       }
       this.usedKeys.unshift(token);
       this.usedKeys = this.usedKeys.slice(0, 20);
-      const decryptedToken = this.decryptWithPrivateKey(token);
+      const decryptedToken = this.decryptWithPrivateKey(token);*/
       const keyword = this.configService.get("KEY_KEYWORD");
       const check = `${keyword}-${new Date().getMinutes()}`;
       const check2 = `${keyword}-${new Date().getMinutes() - 1}`; // posible desface con el cliente
-      return check === decryptedToken || check2 === decryptedToken;
+      return check === token || check2 === token;
     } catch (e) {
       throw new UnauthorizedException();
     }
