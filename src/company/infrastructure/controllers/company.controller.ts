@@ -58,6 +58,16 @@ export class CompanyController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
+  @Get("/current")
+  async findAccessCurrent(): Promise<CompanyDto | null> {
+    const data = await this.service.findCurrent();
+    if (!data) {
+      return null;
+    }
+    return this.mapper.toDto(data);
+  }
+
+  @UseGuards(AuthGuard)
   @Get("paginated")
   async findPaginated(
     @Query() paginationDto: PaginatedDto

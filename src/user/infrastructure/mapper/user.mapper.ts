@@ -12,6 +12,8 @@ import { DomainCreateUserDto } from "src/user/domain/dto/user.create.dto";
 import { DomainUpdateUserDto } from "src/user/domain/dto/user.update.dto";
 import { UserDocument } from "../mongodb/schemas/user.schema";
 import { FlattenMaps } from "mongoose";
+import { UpdateUserPasswordDto } from "../dto/user.update_password.dto";
+import { DomainUpdateUserPasswordDto } from "src/user/domain/dto/user.update_password.dto";
 
 // Shared
 
@@ -29,5 +31,9 @@ export class UserMapper {
 
   toDto(user: User): UserDto {
     return user as UserDto;
+  }
+
+  toDomainUpdatePassword(password: UpdateUserPasswordDto): DomainUpdateUserPasswordDto {
+    return password as DomainUpdateUserPasswordDto;
   }
 }
