@@ -7,6 +7,8 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { LoginAuthDto } from "src/auth/application/dto/auth.login.dto";
+import { SignUpAuthDto } from "src/auth/application/dto/auth.signup.dto";
+import { DomainSignUpAuthDto } from "src/auth/domain/dto/signup.dto";
 import { AuthService } from "src/auth/domain/interfaces/auth.service.interface";
 import { ApiKeyGuard } from "src/shared/infrastructure/middleware/api_key.middleware";
 import { AuthGuard } from "src/shared/infrastructure/middleware/auth.middleware";
@@ -28,10 +30,9 @@ export class AuthController {
   @Post("/signup")
   @HttpCode(200)
   @UseGuards(ApiKeyGuard)
-  async signup(@Body() auth: LoginAuthDto): Promise<{ token: string | null }> {
-    //const token = await this.authService.login(auth);
-    //return { token };
-    return null;
+  async signup(@Body() auth: SignUpAuthDto): Promise<{ token: string | null }> {
+    const token = await this.authService.signup(auth as DomainSignUpAuthDto);
+    return { token };
   }
 
   @Post("/refetch")

@@ -8,6 +8,7 @@ import { User } from "src/user/domain/entities/user.type";
 import { CompanyService } from "src/company/domain/interfaces/company.service.interface";
 import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
 import { TokenPayloadType } from "src/auth/domain/types/token_payload.type";
+import { DomainSignUpAuthDto } from "src/auth/domain/dto/signup.dto";
 
 @Injectable()
 export class AuthServiceImpl implements AuthService {
@@ -31,6 +32,20 @@ export class AuthServiceImpl implements AuthService {
     );
     if (!isMatch) {
       throw new UnauthorizedException("La contraseña no coinciden");
+    }
+    const token = this.formatToken(user);
+    return token;
+  }
+  
+  async signup(data: DomainSignUpAuthDto): Promise<string | null> {
+    const userExists = await this.userService.getByEmail(data.email);
+    if(userExists) {
+      throw new UnauthorizedException("El email ya existe");
+    }
+    const password = await this.passwordHelper.encrypt(data.password);
+    const user = await this.userService.create({...data, active: true, password, shangePassword: false });
+    if (!user) {
+      throw new UnauthorizedException("No se pudo realizar el registro");
     }
     const token = this.formatToken(user);
     return token;

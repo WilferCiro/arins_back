@@ -18,9 +18,9 @@ import * as dayjs from "dayjs";
 @Injectable()
 export class CompanyMapper {
   toDomainCreate(companyDto: CreateCompanyDto): DomainCreateCompanyDto {
-    const { active, name, nit, address, cellphone, email, webpage, type } =
+    const { name, nit, address, cellphone, email, webpage, type } =
       companyDto;
-    return { active, name, nit, address, cellphone, email, webpage, type };
+    return { name, nit, address, cellphone, email, webpage, type };
   }
 
   toDomainUpdate(companyDto: UpdateCompanyDto): DomainUpdateCompanyDto {

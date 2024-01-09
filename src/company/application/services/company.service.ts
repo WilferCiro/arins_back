@@ -14,6 +14,7 @@ import { DomainUpdateCompanyDto } from "src/company/domain/dto/company.update.dt
 // Shared
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
+import * as dayjs from "dayjs";
 
 @Injectable()
 export class CompanyServiceImpl implements CompanyService {
@@ -28,7 +29,7 @@ export class CompanyServiceImpl implements CompanyService {
     return await this.repository.findAll();
   }
 
-  async findCurrent(): Promise<Company> {
+  async findCurrent(): Promise<Company | null> {
     const company_id = this.contextService.get<string | undefined>("company");
     return await this.findById(company_id);
   }
@@ -52,6 +53,23 @@ export class CompanyServiceImpl implements CompanyService {
   }
 
   async create(company: DomainCreateCompanyDto): Promise<Company> {
+    const user_id = this.contextService.get<string | undefined>("user_id");
+    company.user_id = user_id;
+    company.active = true;
+    company.access = {
+      inventory: {
+        price: 30000,
+        expiration: dayjs().add(7, 'day').toDate()
+      },
+      sales: {
+        price: 30000,
+        expiration: dayjs().add(7, 'day').toDate()
+      },
+      entry: {
+        price: 30000,
+        expiration: dayjs().add(7, 'day').toDate()
+      }
+    }
     return await this.repository.create(company);
   }
 

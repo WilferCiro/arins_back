@@ -60,7 +60,12 @@ export class CompanyRepositoryImpl implements CompanyRepository {
   }
 
   async create(company: DomainCreateCompanyDto): Promise<Company> {
-    const created = new this.model(company);
+    const newCompany = {
+      ...company,
+      admin: new Types.ObjectId(company.user_id),
+      user_id: undefined,
+    }
+    const created = new this.model(newCompany);
     return await created.save();
   }
 

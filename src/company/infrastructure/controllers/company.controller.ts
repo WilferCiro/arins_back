@@ -49,8 +49,11 @@ export class CompanyController extends BaseController {
 
   @UseGuards(AuthGuard)
   @Get("/access")
-  async findAccess(): Promise<CompanyAccessDto> {
+  async findAccess(): Promise<CompanyAccessDto | null> {
     const data = await this.service.findCurrent();
+    if (!data) {
+      return null;
+    }
     return this.mapper.toDtoAccess(data);
   }
 

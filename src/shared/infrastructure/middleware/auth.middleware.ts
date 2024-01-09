@@ -33,6 +33,7 @@ export class AuthGuard implements CanActivate {
         secret: this.configService.get("SECRET_JWT"),
       });
       this.contextService.set<TokenPayloadType>("payload", payload);
+      this.contextService.set<string>("user_id", payload._id);
       const currentCompany = payload.companies.filter(
         (company) => company.active
       )?.[0]?._id;
