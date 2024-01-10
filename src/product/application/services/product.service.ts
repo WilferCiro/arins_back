@@ -16,6 +16,7 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 import { DomainFilterProductDto } from "src/product/domain/dto/product.filter.dto";
 import { productExcelHeaders } from "../constants/products.excel_header";
 import { FilesServiceInterface } from "src/modules/files/domain/interfaces/files.service.interface";
+import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
 
 @Injectable()
 export class ProductServiceImpl implements ProductService {
@@ -23,7 +24,9 @@ export class ProductServiceImpl implements ProductService {
     @Inject("ProductRepository")
     private readonly repository: ProductRepository,
     @Inject("FilesService")
-    private readonly filesService: FilesServiceInterface
+    private readonly filesService: FilesServiceInterface,
+    @Inject("RequestContext")
+    private readonly contextService: RequestContextService
   ) {}
 
   async findAll(store_id: string): Promise<Product[]> {
@@ -31,13 +34,15 @@ export class ProductServiceImpl implements ProductService {
   }
 
   async findById(_id: string): Promise<Product> {
-    return await this.repository.findById(_id);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findById(_id, company_id);
   }
 
   async findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto & DomainFilterProductDto
   ): Promise<PaginatedResultInterface<Product>> {
-    return await this.repository.findPaginated(pagination);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findPaginated(pagination, company_id);
   }
 
   async create(product: DomainCreateProductDto): Promise<Product> {
@@ -49,7 +54,8 @@ export class ProductServiceImpl implements ProductService {
   }
 
   async export(filters: DomainFilterProductDto): Promise<Buffer> {
-    const data = await this.repository.findByFilter(filters);
+    const company_id = this.contextService.get<string | undefined>("company");
+    const data = await this.repository.findByFilter(filters, company_id);
     const newData = data.map((dep) => ({
       ...dep,
       store: dep.store.name,

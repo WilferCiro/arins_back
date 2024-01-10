@@ -56,10 +56,16 @@ export class ProductController extends BaseController {
   @UseGuards(AuthGuard)
   @Get("paginated")
   async findPaginated(
-    @Query() paginationDto: PaginatedDto
+    @Query() paginationDto: PaginatedDto,
+    @Query() filtersDto: FilterProductDto
   ): Promise<PaginatedResultInterface<ProductDto>> {
     const pagination = this.paginationMapper.toDomain(paginationDto);
-    const data = await this.service.findPaginated(pagination);
+    const filters = this.mapper.toDomainFilters(filtersDto);
+    console.log(filters)
+    const data = await this.service.findPaginated({
+      ...pagination,
+      ...filters,
+    });
     return {
       total: data.total,
       data: data.data.map((d: Product) => this.mapper.toDto(d)),

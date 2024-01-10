@@ -22,6 +22,47 @@ import { DomainFilterProductDto } from "src/product/domain/dto/product.filter.dt
 export class ProductRepositoryImpl implements ProductRepository {
   constructor(@InjectModel("Product") private readonly model: Model<Product>) {}
 
+  private getFilters(filters: DomainFilterProductDto) {
+    return {
+      ...(filters.store_id
+        ? {
+            "store._id": {
+              $in: filters.store_id.map((id) => new Types.ObjectId(id)),
+            },
+          }
+        : {}),
+      ...(filters.search
+        ? {
+            name: { $regex: filters.search, $options: "i" },
+          }
+        : {}),
+    };
+  }
+
+  private getAggregationsFilters(
+    filters: Record<string, any>,
+    company_id: string
+  ) {
+    return [
+      {
+        $lookup: {
+          from: "stores",
+          localField: "store",
+          foreignField: "_id",
+          as: "store",
+        },
+      },
+      {
+        $unwind: {
+          path: "$store",
+        },
+      },
+      {
+        $match: { ...filters, "store.company": new Types.ObjectId(company_id) },
+      },
+    ];
+  }
+
   async findByStoreId(store_id: string): Promise<Product[]> {
     const products = await this.model
       .find({ store: new Types.ObjectId(store_id) })
@@ -29,29 +70,40 @@ export class ProductRepositoryImpl implements ProductRepository {
     return products;
   }
 
-  async findById(_id: string): Promise<Product> {
-    const register = await this.model.findById(_id).lean();
-    return register;
+  async findById(_id: string, company_id: string): Promise<Product> {
+    const aggregations = this.getAggregationsFilters({ _id }, company_id);
+    const register = await this.model.aggregate(aggregations);
+    return register?.[0];
   }
 
   async findPaginated(
-    pagination: DomainPaginationDto
+    pagination: DomainPaginationDto & DomainFilterProductDto,
+    company_id: string
   ): Promise<PaginatedResultInterface<Product>> {
-    const filters = {
-      name: { $regex: pagination.search, $options: "i" },
-    };
-    const total = await this.model.find(filters).countDocuments();
-    const data = await this.model
-      .find(filters)
-      .sort({ createdAt: -1 })
-      .skip(pagination.page * pagination.count)
-      .limit(pagination.count)
-      .populate({
-        path: "store",
-        select: "name _id",
-      })
-      .lean();
-    return { total, data };
+    const filters = this.getFilters(pagination);
+    const aggregations: any = this.getAggregationsFilters(filters, company_id);
+    const total = await this.model.aggregate([
+      ...aggregations,
+      { $count: "total" },
+    ]);
+
+    aggregations.push(
+      ...[
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $skip: pagination.page * pagination.count,
+        },
+        {
+          $limit: +pagination.count,
+        },
+      ]
+    );
+    const data = await this.model.aggregate(aggregations);
+    return { total: total?.[0]?.total, data };
   }
 
   async create(product: DomainCreateProductDto): Promise<Product> {
@@ -63,6 +115,7 @@ export class ProductRepositoryImpl implements ProductRepository {
     const created = new this.model(newData);
     return await created.save();
   }
+
   async createMassive(products: DomainCreateProductDto[]): Promise<number> {
     const newData = products.map((product) => ({
       ...product,
@@ -73,17 +126,13 @@ export class ProductRepositoryImpl implements ProductRepository {
     return data.length;
   }
 
-  async findByFilter(filter: DomainFilterProductDto): Promise<Product[]> {
-    const { store_id, search } = filter;
-    const filterDB = {};
-    return await this.model
-      .find(filterDB)
-      .sort({ createdAt: -1 })
-      .populate({
-        path: "store",
-        select: "name _id",
-      })
-      .lean();
+  async findByFilter(
+    filter: DomainFilterProductDto,
+    company_id: string
+  ): Promise<Product[]> {
+    const filters = this.getFilters(filter);
+    const aggregations: any = this.getAggregationsFilters(filters, company_id);
+    return await this.model.aggregate(aggregations);
   }
 
   async update(_id: string, product: DomainUpdateProductDto): Promise<Product> {

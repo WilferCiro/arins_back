@@ -22,54 +22,82 @@ import { DomainFilterAssetDto } from "src/asset/domain/dto/assets.filter.dto";
 export class AssetRepositoryImpl implements AssetRepository {
   constructor(@InjectModel("Asset") private readonly model: Model<Asset>) {}
 
-  async findAll(): Promise<Asset[]> {
-    const assets = await this.model
-      .find()
-      .populate({
-        path: "dependency",
-        select: "name _id",
-      })
-      .lean();
+  private getAggregationsFilters(filters: Record<string, any>) {
+    return [
+      {
+        $lookup: {
+          from: "dependencies",
+          localField: "dependency",
+          foreignField: "_id",
+          as: "dependency",
+        },
+      },
+      {
+        $unwind: {
+          path: "$dependency",
+        },
+      },
+      {
+        $match: filters,
+      },
+    ];
+  }
+
+  async findAll(company_id: string): Promise<Asset[]> {
+    const aggregations = this.getAggregationsFilters({
+      "dependency.company": new Types.ObjectId(company_id),
+    });
+    const assets = await this.model.aggregate(aggregations);
     return assets;
   }
 
-  async findById(_id: string): Promise<Asset> {
-    const register = await this.model
-      .findById(_id)
-      .populate({
-        path: "dependency",
-        select: "name _id",
-      })
-      .lean();
-    return register;
+  async findById(_id: string, company_id: string): Promise<Asset> {
+    const aggregations = this.getAggregationsFilters({
+      _id,
+      "dependency.company": new Types.ObjectId(company_id),
+    });
+    const register = await this.model.aggregate(aggregations);
+    return register?.[0];
   }
-  async findByFilter(filter): Promise<Asset[]> {
-    const assets = await this.model
-      .find(filter)
-      .populate({
-        path: "dependency",
-        select: "name _id",
-      })
-      .lean();
+
+  async findByFilter(filters, company_id: string): Promise<Asset[]> {
+    const aggregations = this.getAggregationsFilters({
+      ...filters,
+      "dependency.company": new Types.ObjectId(company_id),
+    });
+    const assets = await this.model.aggregate(aggregations);
     return assets;
   }
 
   async findPaginated(
     pagination: DomainPaginationDto,
-    filters
+    filters,
+    company_id: string
   ): Promise<PaginatedResultInterface<Asset>> {
-    const total = await this.model.find(filters).countDocuments();
-    const data = await this.model
-      .find(filters)
-      .sort({ createdAt: -1 })
-      .skip(pagination.page * pagination.count)
-      .limit(pagination.count)
-      .populate({
-        path: "dependency",
-        select: "name _id",
-      })
-      .lean();
-    return { total, data };
+    const aggregations: any = this.getAggregationsFilters({
+      ...filters,
+      "dependency.company": new Types.ObjectId(company_id),
+    });
+    const total = await this.model
+      .aggregate([...aggregations, { $count: "total" }])
+      .exec();
+    aggregations.push(
+      ...[
+        {
+          $sort: {
+            createdAt: -1,
+          },
+        },
+        {
+          $skip: pagination.page * pagination.count,
+        },
+        {
+          $limit: +pagination.count,
+        },
+      ]
+    );
+    const data = await this.model.aggregate(aggregations);
+    return { total: total[0]?.total, data };
   }
 
   async create(asset: DomainCreateAssetDto): Promise<Asset> {
@@ -81,6 +109,7 @@ export class AssetRepositoryImpl implements AssetRepository {
     const created = new this.model(newData);
     return await created.save();
   }
+
   async createMassive(assets: DomainCreateAssetDto[]): Promise<number> {
     const newData = assets.map((asset) => ({
       ...asset,
@@ -120,7 +149,7 @@ export class AssetRepositoryImpl implements AssetRepository {
     const andConditions = {
       ...(filters.dependency_id
         ? {
-            dependency: {
+            "dependency._id": {
               $in: filters.dependency_id.map((id) => new Types.ObjectId(id)),
             },
           }

@@ -11,15 +11,16 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 import { DomainFilterAssetDto } from "../dto/assets.filter.dto";
 
 export interface AssetRepository {
-  findById(_id: string): Promise<Asset>;
-  findAll(): Promise<Asset[]>;
+  findById(_id: string, company_id: string): Promise<Asset>;
+  findAll(company_id: string): Promise<Asset[]>;
   findPaginated(
     pagination: DomainPaginationDto,
-    filters
+    filters,
+    company_id: string
   ): Promise<PaginatedResultInterface<Asset>>;
 
   formatFilters(filters: DomainFilterAssetDto);
-  findByFilter(filters): Promise<Asset[]>;
+  findByFilter(filters, company_id: string): Promise<Asset[]>;
 
   create(asset: DomainCreateAssetDto): Promise<Asset>;
   createMassive(assets: DomainCreateAssetDto[]): Promise<number>;
