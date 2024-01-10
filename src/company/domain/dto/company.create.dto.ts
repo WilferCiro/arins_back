@@ -6,5 +6,20 @@ export class DomainCreateCompanyDto {
   email: string;
   webpage: string;
   type: string;
-  active: boolean;
+  active?: boolean;
+  user_id?: string;
+  access?: {
+    inventory?: {
+      price: number;
+      expiration: Date;
+    };
+    sales?: {
+      price: number;
+      expiration: Date;
+    };
+    entry?: {
+      price: number;
+      expiration: Date;
+    };
+  }
 }

@@ -26,6 +26,7 @@ import { AuthGuard } from "src/shared/infrastructure/middleware/auth.middleware"
 import { PaginationMapper } from "src/shared/application/mapper/pagination.mapper";
 import { PaginatedDto } from "src/shared/application/dto/paginated.get.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
+import { UpdateUserPasswordDto } from "../dto/user.update_password.dto";
 
 @Controller("users")
 export class UserController extends BaseController {
@@ -48,6 +49,13 @@ export class UserController extends BaseController {
       total: data.total,
       data: data.data.map((d: User) => this.mapper.toDto(d)),
     };
+  }
+
+  @UseGuards(AuthGuard)
+  @Get("profile")
+  async getProfile(): Promise<UserDto> {
+    const data = await this.service.getProfile();
+    return this.mapper.toDto(data);
   }
 
   @UseGuards(AuthGuard)
@@ -74,14 +82,12 @@ export class UserController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(":_id/password")
+  @Patch("password")
   async updatePassword(
-    @Param("_id") _id: string,
-    @Body() user: UpdateUserDto
+    @Body() user: UpdateUserPasswordDto
   ): Promise<UserDto> {
-    const data = await this.service.update(
-      _id,
-      this.mapper.toDomainUpdate(user)
+    const data = await this.service.updatePassword(
+      this.mapper.toDomainUpdatePassword(user)
     );
     return this.mapper.toDto(data);
   }

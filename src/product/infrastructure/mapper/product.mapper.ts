@@ -13,6 +13,7 @@ import { DomainUpdateProductDto } from "src/product/domain/dto/product.update.dt
 import { SelectDto } from "src/shared/application/dto/select.dto";
 import { FilterProductDto } from "../dto/product.filter.dto";
 import { DomainFilterProductDto } from "src/product/domain/dto/product.filter.dto";
+import { formatArrayString } from "src/shared/application/helpers/formatArrayString";
 
 // Shared
 
@@ -55,6 +56,9 @@ export class ProductMapper {
   }
 
   toDomainFilters(filters: FilterProductDto): DomainFilterProductDto {
-    return filters as DomainFilterProductDto;
+    return {
+      ...filters,
+      store_id: formatArrayString(filters.store_id),
+    } as DomainFilterProductDto;
   }
 }

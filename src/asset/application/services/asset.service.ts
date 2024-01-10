@@ -16,6 +16,7 @@ import { PaginatedResultInterface } from "src/shared/application/interfaces/pagi
 import { DomainFilterAssetDto } from "src/asset/domain/dto/assets.filter.dto";
 import { assetsExcelHeaders } from "../constants/assets.excel_header";
 import { FilesServiceInterface } from "src/modules/files/domain/interfaces/files.service.interface";
+import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
 
 @Injectable()
 export class AssetServiceImpl implements AssetService {
@@ -23,23 +24,31 @@ export class AssetServiceImpl implements AssetService {
     @Inject("AssetRepository")
     private readonly repository: AssetRepository,
     @Inject("FilesService")
-    private readonly filesService: FilesServiceInterface
+    private readonly filesService: FilesServiceInterface,
+    @Inject("RequestContext")
+    private readonly contextService: RequestContextService
   ) {}
 
   async findAll(): Promise<Asset[]> {
-    return await this.repository.findAll();
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findAll(company_id);
   }
 
   async findById(_id: string): Promise<Asset> {
-    return await this.repository.findById(_id);
+    const company_id = this.contextService.get<string | undefined>("company");
+    return await this.repository.findById(_id, company_id);
   }
 
   async findPaginated(
     pagination: DomainPaginationDto & DomainFilterAssetDto
   ): Promise<PaginatedResultInterface<Asset>> {
-    // TODO: add filter company
+    const company_id = this.contextService.get<string | undefined>("company");
     const filtersRepo = this.repository.formatFilters(pagination);
-    return await this.repository.findPaginated(pagination, filtersRepo);
+    return await this.repository.findPaginated(
+      pagination,
+      filtersRepo,
+      company_id
+    );
   }
 
   async create(asset: DomainCreateAssetDto): Promise<Asset> {
@@ -50,8 +59,9 @@ export class AssetServiceImpl implements AssetService {
   }
 
   async export(filters: DomainFilterAssetDto): Promise<Buffer> {
+    const company_id = this.contextService.get<string | undefined>("company");
     const filtersRepo = this.repository.formatFilters(filters);
-    const data = await this.repository.findByFilter(filtersRepo);
+    const data = await this.repository.findByFilter(filtersRepo, company_id);
     const newData = data.map((dep) => ({
       ...dep,
       dependency: dep.dependency.name,

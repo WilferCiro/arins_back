@@ -40,10 +40,11 @@ export class ApiKeyGuard implements CanActivate {
       this.usedKeys = this.usedKeys.slice(0, 20);
       const decryptedToken = this.decryptWithPrivateKey(token);*/
       const keyword = this.configService.get("KEY_KEYWORD");
-      const check = `${keyword}-${new Date().getMinutes()}`;
-      const check2 = `${keyword}-${new Date().getMinutes() - 1}`; // posible desface con el cliente
+      const check = `${keyword}`;
+      const check2 = `${keyword}`; // posible desface con el cliente
       return check === token || check2 === token;
     } catch (e) {
+      console.log(e);
       throw new UnauthorizedException();
     }
   }

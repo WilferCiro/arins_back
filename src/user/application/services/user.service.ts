@@ -1,5 +1,5 @@
 // Nest
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 
 // Application
 
@@ -15,13 +15,17 @@ import { DomainUpdateUserDto } from "src/user/domain/dto/user.update.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 import { generateRandomPassword } from "src/shared/application/helpers/randomPassword";
 import { PasswordHelper } from "src/shared/infrastructure/helpers/PasswordHelper";
+import { RequestContextService } from "src/modules/context/domain/interfaces/context.service.interface";
+import { DomainUpdateUserPasswordDto } from "src/user/domain/dto/user.update_password.dto";
 
 @Injectable()
 export class UserServiceImpl implements UserService {
   constructor(
     @Inject("UserRepository")
     private readonly repository: UserRepository,
-    private passwordHelper: PasswordHelper
+    private passwordHelper: PasswordHelper,
+    @Inject("RequestContext")
+    private readonly contextService: RequestContextService
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -34,6 +38,11 @@ export class UserServiceImpl implements UserService {
 
   async getByEmail(email: string): Promise<User> {
     return await this.repository.findByEmail(email);
+  }
+
+  async getProfile(): Promise<User> {
+    const user_id = this.contextService.get<string | undefined>("user_id");
+    return await this.findById(user_id);
   }
 
   async findPaginated(
@@ -60,5 +69,24 @@ export class UserServiceImpl implements UserService {
 
   async update(_id: string, user: DomainUpdateUserDto): Promise<User> {
     return await this.repository.update(_id, user);
+  }
+
+  async updatePassword(password: DomainUpdateUserPasswordDto): Promise<User> {
+    const user_id = this.contextService.get<string | undefined>("user_id");
+    const user = await this.repository.findById(user_id);
+    if (!user) {
+      throw new UnauthorizedException("Revisa los datos ingresados");
+    }
+    const isMatch = await this.passwordHelper.compare(
+      password.last_password,
+      user?.password
+    );
+    if (!isMatch) {
+      throw new UnauthorizedException("Revisa tu contraseña actual");
+    }
+    // TODO: Send EMAIL
+    user.password = await this.passwordHelper.encrypt(password.password);
+    const userUdted = await this.repository.update(user_id, user);
+    return userUdted;
   }
 }

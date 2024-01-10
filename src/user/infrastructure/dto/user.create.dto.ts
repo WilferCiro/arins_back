@@ -15,5 +15,5 @@ export class CreateUserDto {
   cellphone?: string;
 
   @IsNotEmpty()
-  active: boolean;
+  active?: boolean;
 }
