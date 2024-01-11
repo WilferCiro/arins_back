@@ -1,5 +1,5 @@
 // Nest
-import { Inject, Injectable } from "@nestjs/common";
+import { HttpException, Inject, Injectable } from "@nestjs/common";
 
 // Application
 
@@ -58,11 +58,11 @@ export class SaleServiceImpl implements SaleService {
           dayjs().startOf("day").utc().toDate(),
           dayjs().endOf("day").utc().toDate(),
         ],
-        store_id: store._id,
+        store_id: store._id.toString(),
       });
       return {
         store: {
-          _id: store._id,
+          _id: store._id.toString(),
           name: store.name,
         },
         active: sale.length > 0,
@@ -76,6 +76,16 @@ export class SaleServiceImpl implements SaleService {
   }
 
   async create(sale: DomainCreateSaleDto): Promise<Sale> {
+    const actived = await this.findActive();
+    const finded = actived.find(
+      (active) => active.store._id === sale.store_id
+    );
+    if (finded.sale !== undefined) {
+      throw new HttpException(
+        "La bodega seleccionada ya tiene una venta abierta en el día",
+        400
+      );
+    }
     return await this.repository.create(sale);
   }
 

@@ -78,12 +78,14 @@ export class SaleController extends BaseController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(@Body() sale: CreateSaleDto): Promise<SaleDto> {
     const data = await this.service.create(this.mapper.toDomainCreate(sale));
     return this.mapper.toDto(data);
   }
 
   @Post("subsale")
+  @UseGuards(AuthGuard)
   async createSale(@Body() sale: CreateSubSaleDto): Promise<SaleDto> {
     const data = await this.service.createSubSale(
       this.mapper.toDomainCreateSubSale(sale)
@@ -92,6 +94,7 @@ export class SaleController extends BaseController {
   }
 
   @Post("order")
+  @UseGuards(AuthGuard)
   async createOrder(@Body() sale: CreateSaleOrderDto): Promise<SaleDto> {
     const data = await this.service.createOrder(
       this.mapper.toDomainCreateOrder(sale)
