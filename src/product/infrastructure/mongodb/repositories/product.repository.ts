@@ -71,7 +71,7 @@ export class ProductRepositoryImpl implements ProductRepository {
   }
 
   async findById(_id: string, company_id: string): Promise<Product> {
-    const aggregations = this.getAggregationsFilters({ _id }, company_id);
+    const aggregations = this.getAggregationsFilters({ _id: new Types.ObjectId(_id) }, company_id);
     const register = await this.model.aggregate(aggregations);
     return register?.[0];
   }

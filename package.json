@@ -5,9 +5,6 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
-  "engines": {
-    "node": "18.17.1"
-  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -23,7 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs-modules/mailer": "^1.10.3",
+    "@nestjs-modules/mailer": "^1.6.1",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.3.0",
     "@nestjs/config": "^3.1.1",
