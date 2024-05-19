@@ -33,6 +33,7 @@ import { Response } from "express";
 import { CreateSubSaleDto } from "../dto/sale.create_subsale.dto";
 import { CreateSaleOrderDto } from "../dto/sale.create_order.dto";
 import { DomainActiveSaleDto } from "src/sale/domain/dto/sale.active.dto";
+import { SaleSimpleDto } from "../dto/sale.simple.dto";
 
 @Controller("sales")
 export class SaleController extends BaseController {
@@ -49,7 +50,7 @@ export class SaleController extends BaseController {
   async findPaginated(
     @Query() query: PaginatedDto,
     @Query() query2: FilterSaleDto
-  ): Promise<PaginatedResultInterface<SaleDto>> {
+  ): Promise<PaginatedResultInterface<SaleSimpleDto>> {
     const pagination = this.paginationMapper.toDomain(query);
     const filters = this.mapper.toDomainFilters(query2);
     const data = await this.service.findPaginated({
@@ -59,7 +60,7 @@ export class SaleController extends BaseController {
     });
     return {
       total: data.total,
-      data: data.data.map((d: Sale) => this.mapper.toDto(d)),
+      data: data.data.map((d: Sale) => this.mapper.toSimpleDto(d)),
     };
   }
 
@@ -72,7 +73,14 @@ export class SaleController extends BaseController {
 
   @UseGuards(AuthGuard)
   @Get(":_id")
-  async findById(@Param("_id") _id: string): Promise<SaleDto> {
+  async findById(@Param("_id") _id: string): Promise<SaleSimpleDto> {
+    const data = await this.service.findById(_id);
+    return this.mapper.toSimpleDto(data);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(":_id/complete")
+  async findCompleteById(@Param("_id") _id: string): Promise<SaleDto> {
     const data = await this.service.findById(_id);
     return this.mapper.toDto(data);
   }
