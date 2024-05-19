@@ -17,9 +17,7 @@ import { DomainUpdateSaleDto } from "src/sale/domain/dto/sale.update.dto";
 import { DomainPaginationDto } from "src/shared/domain/dto/pagination.dto";
 import { PaginatedResultInterface } from "src/shared/application/interfaces/paginated.result.interface";
 import { DomainFilterSaleDto } from "src/sale/domain/dto/sale.filter.dto";
-import { DomainCreateSubSaleDto } from "src/sale/domain/dto/sale.subsale_create.dto";
 import { Product } from "src/product/domain/entities/product.type";
-import { Type } from "class-transformer";
 import { DomainCreateSaleOrderDto } from "src/sale/domain/dto/sale.order_create.dto";
 
 @Injectable()
