@@ -37,7 +37,7 @@ export class SaleServiceImpl implements SaleService {
     private readonly productService: ProductService,
     @Inject("StoreService")
     private readonly storeService: StoreService
-  ) {}
+  ) { }
 
   async findById(_id: string): Promise<Sale> {
     return await this.repository.findById(_id);
@@ -119,6 +119,7 @@ export class SaleServiceImpl implements SaleService {
     }));
     return this.filesService.generateExcel(dataExcel, columns);
   }
+
   async exportById(_id: string): Promise<Buffer> {
     const data = await this.repository.findById(_id);
     const columns = saleIdExcelHeaders;
@@ -140,6 +141,12 @@ export class SaleServiceImpl implements SaleService {
         });
       });
     return this.filesService.generateExcel(dataExcel, columns);
+  }
+
+  async exportInvoice(_id: string, sale_id: string): Promise<Buffer> {
+    const data = await this.repository.findById(_id);
+
+    return this.filesService.generatePDF({ data: data.sales.filter((sale) => sale._id === sale_id), templateString: "<>-->> {date}</>" });
   }
 
   async update(_id: string, sale: DomainUpdateSaleDto): Promise<Sale> {

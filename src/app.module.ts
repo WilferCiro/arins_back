@@ -13,6 +13,7 @@ import { StoresModule } from "./store/infrastructure/store.module";
 import { AuthModule } from "./auth/infrastructure/auth.module";
 import { SalesModule } from "./sale/infrastructure/sale.module";
 import { InventoryReportsModule } from "./inventoryReport/infrastructure/inventoryReport.module";
+import { UserEntrysModule } from "./userEntry/infrastructure/userEntry.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { InventoryReportsModule } from "./inventoryReport/infrastructure/invento
     StoresModule,
     AuthModule,
     SalesModule,
+    UserEntrysModule,
     InventoryReportsModule,
   ],
 })

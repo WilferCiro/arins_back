@@ -137,6 +137,18 @@ export class SaleController extends BaseController {
   }
 
   @UseGuards(AuthGuard)
+  @Get("invoice/:_id")
+  @Header(
+    "Content-Type",
+    "application/pdf"
+  )
+  @Header("Content-Disposition", "attachment; filename=invoice.pdf")
+  async exportInvoice(@Param("_id") _id: string, @Query("sale_id") sale_id: string, @Res() res: Response) {
+    const data = await this.service.exportInvoice(_id, sale_id);
+    res.send(data);
+  }
+
+  @UseGuards(AuthGuard)
   @Patch(":_id")
   async update(
     @Param("_id") _id: string,
