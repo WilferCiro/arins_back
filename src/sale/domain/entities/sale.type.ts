@@ -6,6 +6,7 @@ export class Sale {
 
   initialMoney: number;
   sales: {
+    _id?: string;
     products: {
       original: Product;
       original_id: string;

@@ -24,5 +24,6 @@ export interface SaleService {
   createOrder(order: DomainCreateSaleOrderDto): Promise<Sale>;
   export(filters: DomainFilterSaleDto): Promise<Buffer>;
   exportById(_id: string): Promise<Buffer>;
+  exportInvoice(_id: string, sale_id: string): Promise<Buffer>;
   update(_id: string, sale: DomainUpdateSaleDto): Promise<Sale>;
 }

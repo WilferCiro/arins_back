@@ -13,6 +13,7 @@ export class SaleDocument extends Document {
 
   @Prop([
     {
+      _id: { type: Types.ObjectId, auto: true },
       products: [
         {
           original: { type: Types.ObjectId, ref: "Product" },
@@ -26,6 +27,7 @@ export class SaleDocument extends Document {
     },
   ])
   sales: {
+    _id: Types.ObjectId;
     products: {
       original: ProductDocument;
       name: string;
